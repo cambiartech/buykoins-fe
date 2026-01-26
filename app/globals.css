@@ -1,0 +1,355 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Phone Input Styling */
+.phone-input-container {
+  position: relative;
+}
+
+.PhoneInput {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.PhoneInputCountry {
+  margin-right: 0.5em;
+  display: flex;
+  align-items: center;
+}
+
+.PhoneInputCountryIcon {
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+.PhoneInputCountrySelect {
+  margin-right: 0.5em;
+  padding: 0.5em;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: 'Sequel Sans', arial, sans-serif;
+}
+
+.PhoneInputCountrySelectArrow {
+  opacity: 0.5;
+  margin-left: 0.25em;
+  width: 0.5em;
+  height: 0.5em;
+}
+
+.PhoneInputInput {
+  flex: 1;
+  border: 1px solid;
+  border-radius: 0.5rem;
+  padding: 0.625rem 1rem;
+  font-family: 'Sequel Sans', arial, sans-serif;
+  font-size: 0.875rem;
+  outline: none;
+  transition: all 0.2s;
+}
+
+/* Light theme */
+html.light .PhoneInputInput {
+  background: white;
+  border-color: rgb(229 231 235);
+  color: rgb(17 24 39);
+}
+
+html.light .PhoneInputInput:focus {
+  border-color: var(--tiktok-primary);
+  ring: 1px;
+  ring-color: var(--tiktok-primary);
+}
+
+html.light .PhoneInputCountrySelect {
+  color: rgb(17 24 39);
+}
+
+/* Dark theme */
+.PhoneInputInput {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgb(255 255 255);
+}
+
+.PhoneInputInput:focus {
+  border-color: var(--tiktok-primary);
+  ring: 1px;
+  ring-color: var(--tiktok-primary);
+}
+
+.PhoneInputCountrySelect {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Error state */
+.phone-input-error .PhoneInputInput,
+.phone-input-container.error .PhoneInputInput {
+  border-color: rgb(239 68 68 / 0.5) !important;
+}
+
+.phone-input-error .PhoneInputInput:focus,
+.phone-input-container.error .PhoneInputInput:focus {
+  ring-color: rgb(239 68 68 / 0.5) !important;
+}
+
+.PhoneInputInput::placeholder {
+  opacity: 0.3;
+}
+
+/* ABC Monument Grotesk Font Faces */
+@font-face {
+  font-family: 'ABCMonumentGrotesk';
+  src: url('/fonts/grotesk/ABCMonumentGrotesk-Thin-Trial.otf') format('opentype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ABCMonumentGrotesk';
+  src: url('/fonts/grotesk/ABCMonumentGrotesk-Light-Trial.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ABCMonumentGrotesk';
+  src: url('/fonts/grotesk/ABCMonumentGrotesk-Regular-Trial.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ABCMonumentGrotesk';
+  src: url('/fonts/grotesk/ABCMonumentGrotesk-Medium-Trial.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ABCMonumentGrotesk';
+  src: url('/fonts/grotesk/ABCMonumentGrotesk-Bold-Trial.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ABCMonumentGrotesk';
+  src: url('/fonts/grotesk/ABCMonumentGrotesk-Heavy-Trial.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ABCMonumentGrotesk';
+  src: url('/fonts/grotesk/ABCMonumentGrotesk-Black-Trial.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ABCMonumentGrotesk';
+  src: url('/fonts/grotesk/ABCMonumentGrotesk-Ultra-Trial.otf') format('opentype');
+  font-weight: 950;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Sequel Sans Font Faces - Body variants for paragraphs */
+@font-face {
+  font-family: 'Sequel Sans';
+  src: url('/fonts/sequel/Sequel Sans Light Body.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sequel Sans';
+  src: url('/fonts/sequel/Sequel Sans Book Body.otf') format('opentype');
+  font-weight: 350;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sequel Sans';
+  src: url('/fonts/sequel/Sequel Sans Roman Body.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sequel Sans';
+  src: url('/fonts/sequel/Sequel Sans Medium Body.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sequel Sans';
+  src: url('/fonts/sequel/Sequel Sans Semi Bold Body.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sequel Sans';
+  src: url('/fonts/sequel/Sequel Sans Bold Body.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sequel Sans';
+  src: url('/fonts/sequel/Sequel Sans Heavy Body.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sequel Sans';
+  src: url('/fonts/sequel/Sequel Sans Black Body.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --tiktok-primary: #e81155;
+  --tiktok-dark: #000000;
+  --tiktok-light: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  font-family: 'Sequel Sans', arial, sans-serif;
+}
+
+/* Paragraphs use Sequel Sans */
+p {
+  font-family: 'Sequel Sans', arial, sans-serif;
+}
+
+body {
+  color: var(--tiktok-light);
+  background: var(--tiktok-dark);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Light theme */
+html.light body {
+  color: var(--tiktok-dark);
+  background: var(--tiktok-light);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--tiktok-primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #c50e4a;
+}
+
+/* Floating animations for landing page logos */
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(5deg);
+  }
+}
+
+@keyframes float-delayed {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-15px) rotate(-5deg);
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float-delayed 8s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+/* 3D Card Flip Animation */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Secure Proxy iframe styling - reduce white space and make compact */
+[id*="reveal-card-number"],
+[id*="reveal-cvv"],
+[id*="reveal-pin"] {
+  line-height: 1.75rem !important;
+  overflow: hidden;
+}
+
+[id*="reveal-card-number"] iframe,
+[id*="reveal-cvv"] iframe,
+[id*="reveal-pin"] iframe {
+  height: 28px !important;
+  min-height: 0 !important;
+  max-height: 28px !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  overflow: hidden !important;
+}
