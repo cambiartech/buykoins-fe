@@ -35,7 +35,7 @@ export function DashboardHeader({
           <div>
             <h1 className={`font-monument font-bold text-lg ${
               isDark ? 'text-white' : 'text-gray-900'
-            }`}>BuyTikTokCoins</h1>
+            }`}>BuyKoins</h1>
             <p className={`text-xs font-sequel ${
               isDark ? 'text-white/60' : 'text-gray-600'
             }`}>

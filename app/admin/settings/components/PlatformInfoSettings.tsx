@@ -16,7 +16,7 @@ export function PlatformInfoSettings({ settings, onSave, isSaving }: PlatformInf
   const theme = getThemeClasses(isDark)
 
   const [formData, setFormData] = useState({
-    platformName: 'BuyTikTokCoins',
+    platformName: 'BuyKoins',
     supportEmail: '',
     supportPhone: '',
     termsOfServiceUrl: '',
@@ -27,7 +27,7 @@ export function PlatformInfoSettings({ settings, onSave, isSaving }: PlatformInf
   useEffect(() => {
     if (settings) {
       setFormData({
-        platformName: settings.platformName || 'BuyTikTokCoins',
+        platformName: settings.platformName || 'BuyKoins',
         supportEmail: settings.supportEmail || '',
         supportPhone: settings.supportPhone || '',
         termsOfServiceUrl: settings.termsOfServiceUrl || '',

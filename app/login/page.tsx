@@ -227,17 +227,16 @@ export default function LoginPage() {
       isDark ? 'bg-black' : 'bg-gray-50'
     }`}>
       {/* Left Column - Login Form */}
-      <div className="w-full lg:w-2/3 flex items-center justify-center px-4 sm:px-6 lg:px-12 py-12">
+      <div className="w-full lg:w-2/3 flex items-center justify-center px-4 sm:px-6 lg:px-12 py-12 relative z-10">
         <div className="w-full max-w-md">
           {/* Header with Logo and Theme Toggle */}
           <div className="flex items-center justify-between mb-8">
-            <Link href="/" className="inline-flex items-center space-x-2">
-              <div className="w-8 h-8 bg-tiktok-primary rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">T</span>
-              </div>
-              <span className={`font-sequel font-bold text-xl ${
-                isDark ? 'text-white' : 'text-gray-900'
-              }`}>BuyTikTokCoins</span>
+            <Link href="/" className="inline-flex items-center">
+              <img 
+                src={isDark ? '/logos/logo-white.png' : '/logos/logo-colored.png'} 
+                alt="BuyKoins" 
+                className="h-8 w-auto"
+              />
             </Link>
             <button
               onClick={toggleTheme}
@@ -485,8 +484,13 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Right Column - TikTok Primary Background */}
-      <div className="hidden lg:flex lg:w-1/3 bg-tiktok-primary" />
+      {/* Right Column - Artboard Background */}
+      <div 
+        className="hidden lg:flex lg:w-1/3 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: 'url(/bg/artboard.png)',
+        }}
+      ></div>
     </div>
   )
 }

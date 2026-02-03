@@ -1,7 +1,7 @@
 {
-  "name": "buytiktokcoins",
+  "name": "buykoins",
   "version": "1.0.0",
-  "description": "TikTok Creator Earnings Withdrawal Platform",
+  "description": "Creator Earnings Withdrawal Platform",
   "private": true,
   "scripts": {
     "dev": "next dev",

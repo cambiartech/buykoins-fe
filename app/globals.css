@@ -233,7 +233,8 @@ html.light .PhoneInputCountrySelect {
 }
 
 :root {
-  --tiktok-primary: #e81155;
+  --tiktok-primary: #ff4aff; /* Soft Purple from brand guide */
+  /* --tiktok-primary: #e81155; */
   --tiktok-dark: #000000;
   --tiktok-light: #ffffff;
 }

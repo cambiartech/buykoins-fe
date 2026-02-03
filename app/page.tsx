@@ -11,12 +11,28 @@ gsap.registerPlugin(ScrollTrigger)
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [showLanguageMenu, setShowLanguageMenu] = useState(false)
 
   useEffect(() => {
     // Check if user is logged in
     const userEmail = localStorage.getItem('userEmail')
     setIsLoggedIn(!!userEmail)
   }, [])
+
+  // Close language menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
+      if (!target.closest('.language-menu-container')) {
+        setShowLanguageMenu(false)
+      }
+    }
+
+    if (showLanguageMenu) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showLanguageMenu])
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
@@ -25,24 +41,62 @@ export default function LandingPage() {
       <header className="relative z-10 px-4 sm:px-6 lg:px-8 py-6">
         <nav className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-tiktok-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">T</span>
-            </div>
-            <span className="text-white font-sequel font-bold text-xl sm:text-2xl">BuyTikTokCoins</span>
+            <img 
+              src="/logos/logo-white.png" 
+              alt="BuyKoins" 
+              className="h-12 w-auto"
+            />
+            {/* <span className="text-white font-sequel font-bold text-xl sm:text-2xl">BuyKoins</span> */}
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
-            <button className="flex items-center space-x-2 text-white/80 hover:text-white transition-colors">
-              <Globe size={16} weight="regular" />
-              <span className="text-sm">EN</span>
-            </button>
+            <div className="relative language-menu-container">
+              <button 
+                onClick={() => setShowLanguageMenu(!showLanguageMenu)}
+                className="flex items-center space-x-2 text-white/80 hover:text-white transition-colors"
+              >
+                <Globe size={16} weight="regular" />
+                <span className="text-sm">EN</span>
+              </button>
+              {showLanguageMenu && (
+                <div className="absolute top-full right-0 mt-2 bg-[#29013a] border border-white/10 rounded-lg shadow-xl py-2 min-w-[120px] z-50">
+                  <button 
+                    onClick={() => {
+                      setShowLanguageMenu(false)
+                      // Language change logic here
+                    }}
+                    className="w-full text-left px-4 py-2 text-white hover:bg-white/10 transition-colors text-sm font-sequel"
+                  >
+                    English (EN)
+                  </button>
+                  <button 
+                    onClick={() => {
+                      setShowLanguageMenu(false)
+                      // Language change logic here
+                    }}
+                    className="w-full text-left px-4 py-2 text-white/70 hover:bg-white/10 transition-colors text-sm font-sequel"
+                  >
+                    Español (ES)
+                  </button>
+                  <button 
+                    onClick={() => {
+                      setShowLanguageMenu(false)
+                      // Language change logic here
+                    }}
+                    className="w-full text-left px-4 py-2 text-white/70 hover:bg-white/10 transition-colors text-sm font-sequel"
+                  >
+                    Français (FR)
+                  </button>
+                </div>
+              )}
+            </div>
             <Link href="/login" className="text-white/80 hover:text-white transition-colors text-sm">
               Log in
             </Link>
             <Link 
               href="/signup" 
-              className="bg-white text-tiktok-primary px-6 py-2 rounded-full font-semibold hover:bg-white/90 transition-colors text-sm"
+              className="bg-white text-[#29013a] px-6 py-2 rounded-full font-semibold hover:bg-white/90 transition-colors text-sm"
             >
               Sign up
             </Link>
@@ -65,7 +119,7 @@ export default function LandingPage() {
             </Link>
             <Link 
               href="/signup" 
-              className="block bg-white text-tiktok-primary px-6 py-2 rounded-full font-semibold text-center"
+              className="block bg-white text-[#29013a] px-6 py-2 rounded-full font-semibold text-center"
             >
               Sign up
             </Link>
@@ -77,20 +131,20 @@ export default function LandingPage() {
       <main className="relative z-10 px-4 sm:px-6 lg:px-8 min-h-screen flex items-center justify-center overflow-hidden">
         {/* Floating Logos Background - Behind text but visible, hidden on mobile */}
         <div className="hidden md:block absolute inset-0 overflow-hidden pointer-events-none z-0">
-          {/* TikTok Logo - Top Left (Most Prominent) */}
-          <div className="absolute top-20 left-4 sm:left-10 w-36 h-36 sm:w-48 sm:h-48 opacity-35 animate-float-slow">
+          {/* BuyKoins Logo - Top Left (Most Prominent) */}
+          <div className="absolute top-20 left-4 sm:left-10 w-36 h-36 sm:w-48 sm:h-48 opacity-20 animate-float-slow">
             <img 
-              src="/logos/tiktok.png" 
-              alt="TikTok" 
+              src="/logos/logo-colored.png" 
+              alt="BuyKoins" 
               className="w-full h-full object-contain drop-shadow-2xl"
             />
           </div>
           
-          {/* TikTok Logo - Center Right (Large, prominent) */}
-          <div className="absolute top-1/3 right-1/4 w-44 h-44 sm:w-56 sm:h-56 opacity-30 animate-float-delayed">
+          {/* BuyKoins Logo - Center Right (Large, prominent) */}
+          <div className="absolute top-1/3 right-1/4 w-44 h-44 sm:w-56 sm:h-56 opacity-15 animate-float-delayed">
             <img 
-              src="/logos/tiktok.png" 
-              alt="TikTok" 
+              src="/logos/logo-colored.png" 
+              alt="BuyKoins" 
               className="w-full h-full object-contain drop-shadow-2xl"
             />
           </div>
@@ -139,11 +193,11 @@ export default function LandingPage() {
               Get paid for your
               <br />
               <span className="bg-gradient-to-r from-tiktok-primary to-tiktok-primary/70 bg-clip-text text-transparent">
-                TikTok earnings
+                creator earnings
               </span>
             </h1>
             <p className="text-white/80 text-lg sm:text-xl mb-8 font-sequel max-w-2xl mx-auto">
-              Join our agency and withdraw your TikTok creator earnings instantly. 
+              Join our agency and withdraw your creator earnings instantly. 
               Secure, fast, and reliable.
             </p>
             
@@ -151,7 +205,7 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
                 href="/signup"
-                className="bg-white text-tiktok-primary px-8 py-4 rounded-full font-semibold hover:bg-white/90 transition-all transform hover:scale-105 flex items-center justify-center space-x-2"
+                className="bg-white text-[#29013a] px-8 py-4 rounded-full font-semibold hover:bg-white/90 transition-all transform hover:scale-105 flex items-center justify-center space-x-2"
               >
                 <span>Get Started</span>
                 <ArrowRight size={20} weight="regular" />
@@ -192,7 +246,7 @@ export default function LandingPage() {
 
       {/* Floating CTA - Always Visible */}
       <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 hidden md:block">
-        <div className="bg-tiktok-primary rounded-full px-8 py-4 shadow-2xl flex items-center space-x-6 backdrop-blur-sm">
+        <div className="bg-[#29013a] rounded-full px-8 py-4 shadow-2xl flex items-center space-x-6 backdrop-blur-sm">
           {isLoggedIn ? (
             <>
               <Link
@@ -396,7 +450,7 @@ function FeaturesSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32">
         {/* Title - visible from start */}
         <div ref={titleRef} className="text-center mb-16">
-          <h2 className="text-tiktok-primary font-monument font-bold text-3xl sm:text-4xl lg:text-6xl mb-4">
+          <h2 className="text-[#29013a] font-monument font-bold text-3xl sm:text-4xl lg:text-6xl mb-4">
             Why Choose Us
           </h2>
           {/* <p className="text-gray-600 text-lg font-sequel max-w-2xl mx-auto">
@@ -415,11 +469,8 @@ function FeaturesSection() {
             ref={brandTextRef}
             className="absolute left-4 xl:left-8 2xl:left-12 top-1/4 -translate-y-1/2 hidden lg:block"
           >
-            <h3 className="text-tiktok-primary font-monument font-bold text-6xl xl:text-7xl 2xl:text-8xl leading-tight">
-              BuyTikTok
-              <br />
-              Coins 🪙
-
+            <h3 className="text-[#29013a] font-monument font-bold text-6xl xl:text-7xl 2xl:text-8xl leading-tight">
+              BuyKoins
             </h3>
           </div>
 
@@ -462,8 +513,8 @@ function FAQSection() {
 
   const faqs = [
     {
-      question: 'How do I link my TikTok account?',
-      answer: 'To link your TikTok account, go to your dashboard and click on "Link TikTok Account". Follow the simple verification process to connect your account and set us as your payment method.',
+      question: 'How do I link my creator account?',
+      answer: 'To link your creator account, go to your dashboard and click on "Link Account". Follow the simple verification process to connect your account and set us as your payment method.',
     },
     {
       question: 'How long does it take to process withdrawals?',
@@ -536,7 +587,7 @@ function FAQSection() {
             Frequently Asked Questions
           </h2>
           <p className="text-white/70 text-lg font-sequel">
-            Everything you need to know about withdrawing your TikTok earnings
+            Everything you need to know about withdrawing your creator earnings
           </p>
         </div>
 
@@ -602,14 +653,14 @@ function TestimonialsSection() {
       initials: 'AB',
       color: 'bg-blue-500',
       rating: '',
-      text: 'Awesome platform very user friendly. Would highly recommend BuyTikTokCoins to my friends.',
+      text: 'Awesome platform very user friendly. Would highly recommend BuyKoins to my friends.',
     },
     {
       name: 'Kwame A.',
       initials: 'KA',
       color: 'bg-yellow-500',
       rating: '',
-      text: "I've been a user for a few months! The support was always great and I'm always able to withdraw my TikTok earnings with no problem.",
+      text: "I've been a user for a few months! The support was always great and I'm always able to withdraw my creator earnings with no problem.",
     },
     {
       name: 'Fatima I.',
@@ -755,7 +806,7 @@ function StatsSection() {
       opacity: 0,
       y: 30,
       backgroundColor: '#ffffff',
-      color: '#e81155',
+      color: '#29013a',
     })
 
     // Create scroll timeline - longer scroll distance for better experience
@@ -833,7 +884,7 @@ function StatsSection() {
     tl.to(
       firstLineRef.current,
       {
-        color: '#e81155',
+        color: '#ff4aff',
         duration: 0.5,
         ease: 'power2.inOut',
       },
@@ -842,7 +893,7 @@ function StatsSection() {
     tl.to(
       secondLineRef.current,
       {
-        color: '#e81155',
+        color: '#ff4aff',
         duration: 0.5,
         ease: 'power2.inOut',
       },
@@ -851,19 +902,19 @@ function StatsSection() {
     tl.to(
       subtextRef.current,
       {
-        color: '#e81155',
+        color: '#ff4aff',
         duration: 0.5,
         ease: 'power2.inOut',
       },
       '<'
     )
     
-    // Button changes from white to pink as red slides up
+    // Button changes from white to soft purple background with deep purple text
     tl.to(
       buttonRef.current,
       {
-        backgroundColor: '#e81155',
-        color: '#ffffff',
+        backgroundColor: '#ff4aff',
+        color: '#29013a',
         duration: 0.5,
         ease: 'power2.inOut',
       },
@@ -878,7 +929,7 @@ function StatsSection() {
 
   return (
     <section ref={sectionRef} className="relative z-10 bg-white overflow-hidden min-h-screen">
-      {/* Red overlay - starts covering everything, slides up to reveal white from bottom */}
+      {/* Soft Purple overlay - starts covering everything, slides up to reveal white from bottom */}
       <div
         ref={redOverlayRef}
         className="absolute top-0 left-0 right-0 h-full bg-tiktok-primary"
@@ -902,7 +953,7 @@ function StatsSection() {
           <Link
             ref={buttonRef}
             href="/signup"
-            className="inline-flex items-center space-x-2 bg-white text-tiktok-primary px-8 py-4 rounded-full font-semibold hover:bg-white/90 transition-all transform hover:scale-105"
+            className="inline-flex items-center space-x-2 bg-white text-[#29013a] px-8 py-4 rounded-full font-semibold hover:bg-white/90 transition-all transform hover:scale-105"
           >
             <span>Get Started</span>
             <ArrowRight size={20} weight="regular" />
@@ -915,22 +966,39 @@ function StatsSection() {
 
 // Footer Component
 function Footer() {
+  const [showLanguageMenu, setShowLanguageMenu] = useState(false)
+
+  // Close language menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
+      if (!target.closest('.language-menu-container')) {
+        setShowLanguageMenu(false)
+      }
+    }
+
+    if (showLanguageMenu) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showLanguageMenu])
+
   return (
-    <footer className="relative z-10 bg-white border-t border-gray-200">
+    <footer className="relative z-10 bg-[#29013a] border-t border-[#29013a]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Navigation Links */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
           {/* Get Started */}
           <div>
-            <h3 className="text-tiktok-primary/70 font-semibold mb-4 text-sm">Get Started</h3>
+            <h3 className="text-white/80 font-semibold mb-4 text-sm">Get Started</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/signup" className="text-tiktok-primary hover:underline text-sm">
+                <Link href="/signup" className="text-white/70 hover:text-white transition-colors text-sm">
                   Sign up
                 </Link>
               </li>
               <li>
-                <Link href="/login" className="text-tiktok-primary hover:underline text-sm">
+                <Link href="/login" className="text-white/70 hover:text-white transition-colors text-sm">
                   Login
                 </Link>
               </li>
@@ -939,21 +1007,11 @@ function Footer() {
 
           {/* Discover */}
           <div>
-            <h3 className="text-tiktok-primary/70 font-semibold mb-4 text-sm">Discover</h3>
+            <h3 className="text-white/80 font-semibold mb-4 text-sm">Discover</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/dashboard" className="text-tiktok-primary hover:underline text-sm">
+                <Link href="/dashboard" className="text-white/70 hover:text-white transition-colors text-sm">
                   Dashboard
-                </Link>
-              </li>
-              <li>
-                <Link href="/fees" className="text-tiktok-primary hover:underline text-sm">
-                  Fees
-                </Link>
-              </li>
-              <li>
-                <Link href="/calculator" className="text-tiktok-primary hover:underline text-sm">
-                  Rate Calculator
                 </Link>
               </li>
             </ul>
@@ -961,20 +1019,20 @@ function Footer() {
 
           {/* Company */}
           <div>
-            <h3 className="text-tiktok-primary/70 font-semibold mb-4 text-sm">Company</h3>
+            <h3 className="text-white/80 font-semibold mb-4 text-sm">Company</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/about" className="text-tiktok-primary hover:underline text-sm">
+                <Link href="/about" className="text-white/70 hover:text-white transition-colors text-sm">
                   About
                 </Link>
               </li>
               <li>
-                <Link href="/partnerships" className="text-tiktok-primary hover:underline text-sm">
+                <Link href="/partnerships" className="text-white/70 hover:text-white transition-colors text-sm">
                   Partnerships
                 </Link>
               </li>
               <li>
-                <Link href="/media" className="text-tiktok-primary hover:underline text-sm">
+                <Link href="/media" className="text-white/70 hover:text-white transition-colors text-sm">
                   Media Assets
                 </Link>
               </li>
@@ -983,20 +1041,20 @@ function Footer() {
 
           {/* Legal */}
           <div>
-            <h3 className="text-tiktok-primary/70 font-semibold mb-4 text-sm">Legal</h3>
+            <h3 className="text-white/80 font-semibold mb-4 text-sm">Legal</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/privacy" className="text-tiktok-primary hover:underline text-sm">
+                <Link href="/privacy" className="text-white/70 hover:text-white transition-colors text-sm">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="text-tiktok-primary hover:underline text-sm">
+                <Link href="/terms" className="text-white/70 hover:text-white transition-colors text-sm">
                   Terms and Conditions
                 </Link>
               </li>
               <li>
-                <Link href="/cookies" className="text-tiktok-primary hover:underline text-sm">
+                <Link href="/cookies" className="text-white/70 hover:text-white transition-colors text-sm">
                   Cookie Policy
                 </Link>
               </li>
@@ -1005,21 +1063,11 @@ function Footer() {
 
           {/* Help */}
           <div>
-            <h3 className="text-tiktok-primary/70 font-semibold mb-4 text-sm">Help</h3>
+            <h3 className="text-white/80 font-semibold mb-4 text-sm">Help</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/faq" className="text-tiktok-primary hover:underline text-sm">
-                  FAQ
-                </Link>
-              </li>
-              <li>
-                <Link href="/support" className="text-tiktok-primary hover:underline text-sm">
+                <Link href="/support" className="text-white/70 hover:text-white transition-colors text-sm">
                   Support
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-tiktok-primary hover:underline text-sm">
-                  Contact Us
                 </Link>
               </li>
             </ul>
@@ -1027,25 +1075,61 @@ function Footer() {
         </div>
 
         {/* Bottom Section */}
-        <div className="border-t border-gray-200 pt-8">
+        <div className="border-t border-white/10 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             {/* Left: App Downloads and Language */}
             <div className="flex flex-col gap-4">
               {/* App Download Buttons */}
               <div className="flex flex-col sm:flex-row gap-4">
-                <button className="flex items-center space-x-2 border-2 border-tiktok-primary text-tiktok-primary px-4 py-2 rounded-lg hover:bg-tiktok-primary hover:text-white transition-all">
+                <Link href="/coming-soon" className="flex items-center space-x-2 border-2 border-white/30 text-white px-4 py-2 rounded-lg hover:bg-white/10 transition-all">
                   <span className="text-sm font-semibold">GET IT ON Google Play</span>
-                </button>
-                <button className="flex items-center space-x-2 border-2 border-tiktok-primary text-tiktok-primary px-4 py-2 rounded-lg hover:bg-tiktok-primary hover:text-white transition-all">
+                </Link>
+                <Link href="/coming-soon" className="flex items-center space-x-2 border-2 border-white/30 text-white px-4 py-2 rounded-lg hover:bg-white/10 transition-all">
                   <span className="text-sm font-semibold">Download on the App Store</span>
-                </button>
+                </Link>
               </div>
               {/* Language Selector */}
-              <button className="flex items-center space-x-2 border border-tiktok-primary text-tiktok-primary px-3 py-2 rounded-lg hover:bg-tiktok-primary/10 transition-all w-fit">
-                <Globe size={16} weight="regular" />
-                <span className="text-sm">EN</span>
-                <X size={12} weight="regular" className="rotate-90" />
-              </button>
+              <div className="relative language-menu-container">
+                <button 
+                  onClick={() => setShowLanguageMenu(!showLanguageMenu)}
+                  className="flex items-center space-x-2 border border-white/30 text-white px-3 py-2 rounded-lg hover:bg-white/10 transition-all w-fit"
+                >
+                  <Globe size={16} weight="regular" />
+                  <span className="text-sm">EN</span>
+                  <X size={12} weight="regular" className="rotate-90" />
+                </button>
+                {showLanguageMenu && (
+                  <div className="absolute top-full left-0 mt-2 bg-[#29013a] border border-white/10 rounded-lg shadow-xl py-2 min-w-[120px] z-50">
+                    <button 
+                      onClick={() => {
+                        setShowLanguageMenu(false)
+                        // Language change logic here
+                      }}
+                      className="w-full text-left px-4 py-2 text-white hover:bg-white/10 transition-colors text-sm font-sequel"
+                    >
+                      English (EN)
+                    </button>
+                    <button 
+                      onClick={() => {
+                        setShowLanguageMenu(false)
+                        // Language change logic here
+                      }}
+                      className="w-full text-left px-4 py-2 text-white/70 hover:bg-white/10 transition-colors text-sm font-sequel"
+                    >
+                      Español (ES)
+                    </button>
+                    <button 
+                      onClick={() => {
+                        setShowLanguageMenu(false)
+                        // Language change logic here
+                      }}
+                      className="w-full text-left px-4 py-2 text-white/70 hover:bg-white/10 transition-colors text-sm font-sequel"
+                    >
+                      Français (FR)
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Right: Social Media */}
@@ -1054,7 +1138,7 @@ function Footer() {
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-tiktok-primary text-white flex items-center justify-center hover:bg-tiktok-primary/90 transition-all"
+                className="w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-all"
                 aria-label="Instagram"
               >
                 <InstagramLogo size={20} weight="fill" />
@@ -1063,7 +1147,7 @@ function Footer() {
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-tiktok-primary text-white flex items-center justify-center hover:bg-tiktok-primary/90 transition-all"
+                className="w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-all"
                 aria-label="Facebook"
               >
                 <FacebookLogo size={20} weight="fill" />
@@ -1072,7 +1156,7 @@ function Footer() {
                 href="https://x.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-tiktok-primary text-white flex items-center justify-center hover:bg-tiktok-primary/90 transition-all"
+                className="w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-all"
                 aria-label="X (Twitter)"
               >
                 <span className="text-white font-bold text-sm">X</span>
@@ -1081,10 +1165,10 @@ function Footer() {
           </div>
 
           {/* Copyright */}
-          <div className="mt-8 pt-6 border-t border-gray-200">
-            <p className="text-gray-500 text-xs text-center font-sequel">
-              © {new Date().getFullYear()} BuyTikTokCoins. All rights reserved. | 
-              BuyTikTokCoins is a platform for TikTok creators to withdraw their earnings securely.
+          <div className="mt-8 pt-6 border-t border-white/10">
+            <p className="text-white/60 text-xs text-center font-sequel">
+              © {new Date().getFullYear()} BuyKoins. All rights reserved. | 
+              BuyKoins is a platform for creators to withdraw their earnings securely.
             </p>
           </div>
         </div>

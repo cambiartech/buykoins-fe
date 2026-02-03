@@ -176,11 +176,12 @@ export default function AdminLoginPage() {
       <div className="w-full lg:w-2/3 flex items-center justify-center px-4 sm:px-6 lg:px-12 py-12">
         <div className="w-full max-w-md">
           {/* Logo */}
-          <Link href="/" className="inline-flex items-center space-x-2 mb-8">
-            <div className="w-8 h-8 bg-tiktok-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">T</span>
-            </div>
-            <span className="text-white font-sequel font-bold text-xl">BuyTikTokCoins</span>
+          <Link href="/" className="inline-flex items-center mb-8">
+            <img 
+              src="/logos/logo-white.png" 
+              alt="BuyKoins" 
+              className="h-8 w-auto"
+            />
           </Link>
 
           {/* Title */}

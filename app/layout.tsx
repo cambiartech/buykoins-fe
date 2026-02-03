@@ -3,8 +3,8 @@ import './globals.css'
 import { ToastProvider } from '@/lib/toast'
 
 export const metadata: Metadata = {
-  title: 'Buy TikTok Coins - Creator Earnings Platform',
-  description: 'Withdraw your TikTok creator earnings through our secure platform',
+  title: 'BuyKoins - Creator Earnings Platform',
+  description: 'Withdraw your creator earnings through our secure platform',
 }
 
 export default function RootLayout({
