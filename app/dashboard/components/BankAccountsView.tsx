@@ -114,7 +114,7 @@ export function BankAccountsView({ theme, onClose }: BankAccountsViewProps) {
           <div className="flex items-center space-x-3">
             <button
               onClick={() => setShowAddModal(true)}
-              className="px-4 py-2 bg-tiktok-primary text-white rounded-lg font-semibold hover:bg-tiktok-primary/90 transition-all text-sm font-sequel flex items-center space-x-2"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all text-sm font-sequel flex items-center space-x-2"
             >
               <Plus size={18} weight="regular" />
               <span>Add Account</span>
@@ -167,7 +167,7 @@ export function BankAccountsView({ theme, onClose }: BankAccountsViewProps) {
             }`}>Add a bank account to enable withdrawals</p>
             <button
               onClick={() => setShowAddModal(true)}
-              className="px-6 py-3 bg-tiktok-primary text-white rounded-lg font-semibold hover:bg-tiktok-primary/90 transition-all font-sequel"
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all font-sequel"
             >
               Add Bank Account
             </button>

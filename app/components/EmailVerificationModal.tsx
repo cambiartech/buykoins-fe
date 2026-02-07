@@ -17,7 +17,7 @@ export function EmailVerificationModal({ email, onVerified, onClose }: EmailVeri
   const [verificationCode, setVerificationCode] = useState(['', '', '', '', '', ''])
   const [isLoading, setIsLoading] = useState(false)
   const [isResending, setIsResending] = useState(false)
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark')
+  const [theme, setTheme] = useState<'light' | 'dark'>('light')
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {

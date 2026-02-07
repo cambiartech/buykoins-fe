@@ -175,7 +175,7 @@ export function CardsView({ theme, balance, onClose, onAddFunds, onWalletUpdate 
       case 'frozen':
         return isDark ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' : 'bg-yellow-50 text-yellow-700 border-yellow-200'
       case 'closed':
-        return isDark ? 'bg-red-500/20 text-red-400 border-red-500/30' : 'bg-red-50 text-red-700 border-red-200'
+        return isDark ? 'bg-red-500/20 text-red-300 border-red-500/30' : 'bg-red-100 text-red-700 border-red-200'
       default:
         return isDark ? 'bg-white/10 text-white/60 border-white/10' : 'bg-gray-50 text-gray-600 border-gray-200'
     }
@@ -191,7 +191,7 @@ export function CardsView({ theme, balance, onClose, onAddFunds, onWalletUpdate 
           </h2>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="flex items-center space-x-2 px-4 py-2 bg-tiktok-primary text-white rounded-lg hover:bg-tiktok-primary/90 transition-colors font-sequel mt-2"
+            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-sequel mt-2"
           >
             <Plus size={18} weight="regular" />
             <span>Create Card</span>
@@ -205,7 +205,7 @@ export function CardsView({ theme, balance, onClose, onAddFunds, onWalletUpdate 
       {/* Loading State */}
       {isLoading && (
         <div className="flex items-center justify-center py-12">
-          <div className="w-8 h-8 border-2 border-tiktok-primary border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-2 border-[#29013a] border-t-transparent rounded-full animate-spin"></div>
         </div>
       )}
 
@@ -221,7 +221,7 @@ export function CardsView({ theme, balance, onClose, onAddFunds, onWalletUpdate 
           }`}>{error}</p>
           <button
             onClick={fetchCards}
-            className="mt-2 text-sm text-tiktok-primary hover:underline font-sequel mx-auto block"
+            className="mt-2 text-sm text-[#29013a] hover:underline font-sequel mx-auto block"
           >
             Retry
           </button>
@@ -243,37 +243,70 @@ export function CardsView({ theme, balance, onClose, onAddFunds, onWalletUpdate 
               </p>
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="px-6 py-2 bg-tiktok-primary text-white rounded-lg hover:bg-tiktok-primary/90 transition-colors font-sequel"
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-sequel"
               >
                 Create Card
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {cards.map((card) => {
-                const cardWithSudo = card as Card & { sudoCardId?: string }
-                return (
-                  <VirtualCard
-                    key={card.id}
-                    card={card}
-                    theme={theme}
-                    sudoCardId={cardWithSudo.sudoCardId}
-                    onFund={() => {
-                      setFundingCard(card)
-                      setShowFundModal(true)
-                    }}
-                    onFreeze={() => handleFreezeCard(card)}
-                    onUnfreeze={() => handleUnfreezeCard(card)}
-                    onSetDefault={() => handleSetDefault(card)}
-                    onDelete={() => handleDeleteCard(card)}
-                    onReveal={() => {
-                      setRevealingCard(card)
-                      setShowRevealModal(true)
-                    }}
-                  />
-                )
-              })}
-            </div>
+            <>
+              {/* Mobile: Horizontal Scroll with Partial Cards Visible */}
+              <div className="md:hidden overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 px-4 pb-4">
+                <div className="flex gap-4" style={{ width: 'max-content' }}>
+                  {cards.map((card) => {
+                    const cardWithSudo = card as Card & { sudoCardId?: string }
+                    return (
+                      <div key={card.id} className="snap-start flex-shrink-0 w-[85vw] max-w-sm">
+                        <VirtualCard
+                          card={card}
+                          theme={theme}
+                          sudoCardId={cardWithSudo.sudoCardId}
+                          onFund={() => {
+                            setFundingCard(card)
+                            setShowFundModal(true)
+                          }}
+                          onFreeze={() => handleFreezeCard(card)}
+                          onUnfreeze={() => handleUnfreezeCard(card)}
+                          onSetDefault={() => handleSetDefault(card)}
+                          onDelete={() => handleDeleteCard(card)}
+                          onReveal={() => {
+                            setRevealingCard(card)
+                            setShowRevealModal(true)
+                          }}
+                        />
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+              
+              {/* Desktop: Grid Layout */}
+              <div className="hidden md:grid md:grid-cols-2 md:gap-6">
+                {cards.map((card) => {
+                  const cardWithSudo = card as Card & { sudoCardId?: string }
+                  return (
+                    <VirtualCard
+                      key={card.id}
+                      card={card}
+                      theme={theme}
+                      sudoCardId={cardWithSudo.sudoCardId}
+                      onFund={() => {
+                        setFundingCard(card)
+                        setShowFundModal(true)
+                      }}
+                      onFreeze={() => handleFreezeCard(card)}
+                      onUnfreeze={() => handleUnfreezeCard(card)}
+                      onSetDefault={() => handleSetDefault(card)}
+                      onDelete={() => handleDeleteCard(card)}
+                      onReveal={() => {
+                        setRevealingCard(card)
+                        setShowRevealModal(true)
+                      }}
+                    />
+                  )
+                })}
+              </div>
+            </>
           )}
         </>
       )}

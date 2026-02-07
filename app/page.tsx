@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useEffect, useRef } from 'react'
-import { List, X, ArrowRight, Globe, Wallet, ShieldCheck, Clock, CreditCard, TrendUp, InstagramLogo, FacebookLogo, Plus, Minus, SignIn, UserPlus, Question, House } from '@phosphor-icons/react'
+import { List, X, ArrowRight, Globe, Wallet, ShieldCheck, Clock, CreditCard, TrendUp, InstagramLogo, FacebookLogo, Plus, Minus, SignIn, UserPlus, Question, House, LinkedinLogo, YoutubeLogo } from '@phosphor-icons/react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -986,7 +986,7 @@ function Footer() {
   return (
     <footer className="relative z-10 bg-[#29013a] border-t border-[#29013a]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Navigation Links */}
+        {/* Navigation Links - FIRST */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
           {/* Get Started */}
           <div>
@@ -1074,74 +1074,42 @@ function Footer() {
           </div>
         </div>
 
-        {/* Bottom Section */}
-        <div className="border-t border-white/10 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-            {/* Left: App Downloads and Language */}
-            <div className="flex flex-col gap-4">
-              {/* App Download Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/coming-soon" className="flex items-center space-x-2 border-2 border-white/30 text-white px-4 py-2 rounded-lg hover:bg-white/10 transition-all">
-                  <span className="text-sm font-semibold">GET IT ON Google Play</span>
-                </Link>
-                <Link href="/coming-soon" className="flex items-center space-x-2 border-2 border-white/30 text-white px-4 py-2 rounded-lg hover:bg-white/10 transition-all">
-                  <span className="text-sm font-semibold">Download on the App Store</span>
-                </Link>
-              </div>
-              {/* Language Selector */}
-              <div className="relative language-menu-container">
-                <button 
-                  onClick={() => setShowLanguageMenu(!showLanguageMenu)}
-                  className="flex items-center space-x-2 border border-white/30 text-white px-3 py-2 rounded-lg hover:bg-white/10 transition-all w-fit"
-                >
-                  <Globe size={16} weight="regular" />
-                  <span className="text-sm">EN</span>
-                  <X size={12} weight="regular" className="rotate-90" />
-                </button>
-                {showLanguageMenu && (
-                  <div className="absolute top-full left-0 mt-2 bg-[#29013a] border border-white/10 rounded-lg shadow-xl py-2 min-w-[120px] z-50">
-                    <button 
-                      onClick={() => {
-                        setShowLanguageMenu(false)
-                        // Language change logic here
-                      }}
-                      className="w-full text-left px-4 py-2 text-white hover:bg-white/10 transition-colors text-sm font-sequel"
-                    >
-                      English (EN)
-                    </button>
-                    <button 
-                      onClick={() => {
-                        setShowLanguageMenu(false)
-                        // Language change logic here
-                      }}
-                      className="w-full text-left px-4 py-2 text-white/70 hover:bg-white/10 transition-colors text-sm font-sequel"
-                    >
-                      Español (ES)
-                    </button>
-                    <button 
-                      onClick={() => {
-                        setShowLanguageMenu(false)
-                        // Language change logic here
-                      }}
-                      className="w-full text-left px-4 py-2 text-white/70 hover:bg-white/10 transition-colors text-sm font-sequel"
-                    >
-                      Français (FR)
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
+        {/* Support Links Section */}
+        <div className="border-b border-white/10 pb-6 mb-8">
+          <div className="flex flex-col sm:flex-row gap-6 sm:gap-8">
+            <Link href="/support" className="text-white hover:text-white/80 transition-colors text-sm font-sequel">
+              Live chat
+            </Link>
+            <Link href="/dashboard" className="text-white hover:text-white/80 transition-colors text-sm font-sequel">
+              Client portal
+            </Link>
+            <Link href="/support" className="text-white hover:text-white/80 transition-colors text-sm font-sequel">
+              Knowledge base
+            </Link>
+          </div>
+        </div>
 
-            {/* Right: Social Media */}
+        {/* How can we help? Section */}
+        <div className="border-b border-white/10 pb-8 mb-8">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div>
+              <p className="text-white text-lg sm:text-xl font-sequel mb-2">
+                How can we help?{' '}
+                <Link href="/support" className="text-[#ff4aff] hover:text-[#ff4aff]/80 underline transition-colors">
+                  Contact us.
+                </Link>
+              </p>
+            </div>
+            {/* Social Media Icons */}
             <div className="flex items-center space-x-4">
               <a
-                href="https://instagram.com"
+                href="https://x.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-all"
-                aria-label="Instagram"
+                aria-label="X (Twitter)"
               >
-                <InstagramLogo size={20} weight="fill" />
+                <span className="text-white font-bold text-sm">X</span>
               </a>
               <a
                 href="https://facebook.com"
@@ -1153,22 +1121,82 @@ function Footer() {
                 <FacebookLogo size={20} weight="fill" />
               </a>
               <a
-                href="https://x.com"
+                href="https://linkedin.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-all"
-                aria-label="X (Twitter)"
+                aria-label="LinkedIn"
               >
-                <span className="text-white font-bold text-sm">X</span>
+                <LinkedinLogo size={20} weight="fill" />
+              </a>
+              <a
+                href="https://youtube.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-all"
+                aria-label="YouTube"
+              >
+                <YoutubeLogo size={20} weight="fill" />
+              </a>
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-all"
+                aria-label="Instagram"
+              >
+                <InstagramLogo size={20} weight="fill" />
+              </a>
+              <a
+                href="https://tiktok.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-all"
+                aria-label="TikTok"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                </svg>
               </a>
             </div>
           </div>
+        </div>
 
-          {/* Copyright */}
-          <div className="mt-8 pt-6 border-t border-white/10">
-            <p className="text-white/60 text-xs text-center font-sequel">
-              © {new Date().getFullYear()} BuyKoins. All rights reserved. | 
-              BuyKoins is a platform for creators to withdraw their earnings securely.
+        {/* Large Logo Section - Bold and Centered */}
+        <div className="mb-8 flex justify-center">
+          <img 
+            src="/logos/logo-white.png" 
+            alt="BuyKoins" 
+            className="h-24 sm:h-32 md:h-auto w-auto md:w-full"
+
+            // className="h-24 sm:h-32 md:h-40 w-auto"
+          />
+        </div>
+
+        {/* Bottom Section - Legal Links */}
+        <div className="border-t border-white/10 pt-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            {/* Legal Links */}
+            <div className="flex flex-wrap gap-4 sm:gap-6">
+              <Link href="/terms" className="text-white/70 hover:text-white transition-colors text-xs sm:text-sm font-sequel">
+                Terms of Use
+              </Link>
+              <Link href="/privacy" className="text-white/70 hover:text-white transition-colors text-xs sm:text-sm font-sequel">
+                Privacy Notice
+              </Link>
+              <Link href="/cookies" className="text-white/70 hover:text-white transition-colors text-xs sm:text-sm font-sequel">
+                Cookie Notice
+              </Link>
+              <Link href="/cookies" className="text-white/70 hover:text-white transition-colors text-xs sm:text-sm font-sequel">
+                Cookie settings
+              </Link>
+              <Link href="/support" className="text-white/70 hover:text-white transition-colors text-xs sm:text-sm font-sequel">
+                Trust Center
+              </Link>
+            </div>
+            {/* Copyright */}
+            <p className="text-white/60 text-xs font-sequel">
+              © BuyKoins {new Date().getFullYear()}
             </p>
           </div>
         </div>

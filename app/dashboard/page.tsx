@@ -26,7 +26,7 @@ import { CreditStatus, OnboardingStatus, View, Transaction, Activity } from './c
 function UserDashboardContent() {
   const router = useRouter()
   const toast = useToast()
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark')
+  const [theme, setTheme] = useState<'light' | 'dark'>('light')
   const [currentView, setCurrentView] = useState<View>('overview')
   const [isLoading, setIsLoading] = useState(true)
   const [balance, setBalance] = useState(0) // Earnings balance
@@ -60,17 +60,31 @@ function UserDashboardContent() {
   useEffect(() => {
     const handleOpenSupportChat = (event: Event) => {
       const customEvent = event as CustomEvent
+      console.log('openSupportChat event received:', customEvent.detail)
+      // Always open support, with or without conversationId
       if (customEvent.detail?.conversationId) {
+        console.log('Setting conversationId:', customEvent.detail.conversationId)
         setSupportConversationId(customEvent.detail.conversationId)
         setSupportConversationType(customEvent.detail.type || 'onboarding')
-        // Dispatch chatOpened event to minimize widget BEFORE opening support
-        window.dispatchEvent(new CustomEvent('chatOpened', { bubbles: true }))
-        document.dispatchEvent(new CustomEvent('chatOpened', { bubbles: true }))
-        // Small delay to ensure widget minimizes first
-        setTimeout(() => {
-          setShowSupport(true)
-        }, 100)
+      } else if (customEvent.detail?.type) {
+        // Even without conversationId, set the type
+        console.log('Setting conversation type:', customEvent.detail.type)
+        setSupportConversationId(null)
+        setSupportConversationType(customEvent.detail.type)
+      } else {
+        // No details, just open support
+        console.log('Opening support without conversationId')
+        setSupportConversationId(null)
+        setSupportConversationType(null)
       }
+      // Dispatch chatOpened event to minimize widget BEFORE opening support
+      window.dispatchEvent(new CustomEvent('chatOpened', { bubbles: true }))
+      document.dispatchEvent(new CustomEvent('chatOpened', { bubbles: true }))
+      // Small delay to ensure widget minimizes first
+      setTimeout(() => {
+        console.log('Opening support modal')
+        setShowSupport(true)
+      }, 100)
     }
     // Listen on both window and document for better compatibility
     window.addEventListener('openSupportChat', handleOpenSupportChat)
@@ -437,6 +451,14 @@ function UserDashboardContent() {
         onSuccess={() => {
           fetchDashboardData()
           setShowWidget(false)
+        }}
+        onOpenSupport={(conversationId, type) => {
+          setSupportConversationId(conversationId)
+          setSupportConversationType(type || 'onboarding')
+          setShowWidget(false) // Close widget
+          setTimeout(() => {
+            setShowSupport(true) // Open support
+          }, 100)
         }}
       />
 

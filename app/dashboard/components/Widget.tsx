@@ -24,6 +24,7 @@ interface WidgetProps {
   trigger: 'onboarding' | 'deposit'
   context?: { amount?: number; payoutId?: string; balance?: number }
   onSuccess?: () => void
+  onOpenSupport?: (conversationId: string | null, type?: 'general' | 'onboarding' | 'call_request') => void
 }
 
 interface WidgetSession {
@@ -43,6 +44,7 @@ export function Widget({
   trigger,
   context,
   onSuccess,
+  onOpenSupport,
 }: WidgetProps) {
   const toast = useToast()
   const isDark = theme === 'dark'
@@ -481,6 +483,7 @@ export function Widget({
       onUploadProof: handleUploadProof,
       onComplete: handleComplete,
       sessionData: session.collectedData,
+      onOpenSupport,
     }
 
     switch (session.currentStep) {

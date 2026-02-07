@@ -126,8 +126,8 @@ export function BillingAddressStep({ theme, initialData, onNext, onBack }: Billi
               placeholder="e.g., 123 Main Street"
               className={`w-full pl-12 pr-4 py-3 rounded-lg border font-sequel ${
                 isDark
-                  ? 'bg-white/5 border-white/10 text-white focus:ring-2 focus:ring-tiktok-primary'
-                  : 'bg-gray-50 border-gray-200 text-gray-900 focus:ring-2 focus:ring-tiktok-primary'
+                  ? 'bg-white/5 border-white/10 text-white focus:ring-2 focus:ring-blue-600'
+                  : 'bg-gray-50 border-gray-200 text-gray-900 focus:ring-2 focus:ring-blue-600'
               } focus:outline-none ${errors.line1 ? (isDark ? 'border-red-500/50' : 'border-red-300') : ''}`}
             />
           </div>
@@ -151,8 +151,8 @@ export function BillingAddressStep({ theme, initialData, onNext, onBack }: Billi
             placeholder="e.g., Apt 4B"
             className={`w-full px-4 py-3 rounded-lg border font-sequel ${
               isDark
-                ? 'bg-white/5 border-white/10 text-white focus:ring-2 focus:ring-tiktok-primary'
-                : 'bg-gray-50 border-gray-200 text-gray-900 focus:ring-2 focus:ring-tiktok-primary'
+                ? 'bg-white/5 border-white/10 text-white focus:ring-2 focus:ring-blue-600'
+                : 'bg-gray-50 border-gray-200 text-gray-900 focus:ring-2 focus:ring-blue-600'
             } focus:outline-none`}
           />
         </div>
@@ -171,8 +171,8 @@ export function BillingAddressStep({ theme, initialData, onNext, onBack }: Billi
               placeholder="City"
               className={`w-full px-4 py-3 rounded-lg border font-sequel ${
                 isDark
-                  ? 'bg-white/5 border-white/10 text-white focus:ring-2 focus:ring-tiktok-primary'
-                  : 'bg-gray-50 border-gray-200 text-gray-900 focus:ring-2 focus:ring-tiktok-primary'
+                  ? 'bg-white/5 border-white/10 text-white focus:ring-2 focus:ring-blue-600'
+                  : 'bg-gray-50 border-gray-200 text-gray-900 focus:ring-2 focus:ring-blue-600'
               } focus:outline-none ${errors.city ? (isDark ? 'border-red-500/50' : 'border-red-300') : ''}`}
             />
             {errors.city && (
@@ -193,8 +193,8 @@ export function BillingAddressStep({ theme, initialData, onNext, onBack }: Billi
               onChange={(e) => handleChange('state', e.target.value)}
               className={`w-full px-4 py-3 rounded-lg border font-sequel ${
                 isDark
-                  ? 'bg-white/5 border-white/10 text-white focus:ring-2 focus:ring-tiktok-primary'
-                  : 'bg-gray-50 border-gray-200 text-gray-900 focus:ring-2 focus:ring-tiktok-primary'
+                  ? 'bg-white/5 border-white/10 text-white focus:ring-2 focus:ring-blue-600'
+                  : 'bg-gray-50 border-gray-200 text-gray-900 focus:ring-2 focus:ring-blue-600'
               } focus:outline-none ${errors.state ? (isDark ? 'border-red-500/50' : 'border-red-300') : ''}`}
             >
               <option value="">Select State</option>
@@ -226,8 +226,8 @@ export function BillingAddressStep({ theme, initialData, onNext, onBack }: Billi
             maxLength={6}
             className={`w-full px-4 py-3 rounded-lg border font-sequel ${
               isDark
-                ? 'bg-white/5 border-white/10 text-white focus:ring-2 focus:ring-tiktok-primary'
-                : 'bg-gray-50 border-gray-200 text-gray-900 focus:ring-2 focus:ring-tiktok-primary'
+                ? 'bg-white/5 border-white/10 text-white focus:ring-2 focus:ring-blue-600'
+                : 'bg-gray-50 border-gray-200 text-gray-900 focus:ring-2 focus:ring-blue-600'
             } focus:outline-none ${errors.postalCode ? (isDark ? 'border-red-500/50' : 'border-red-300') : ''}`}
           />
           {errors.postalCode && (
@@ -254,7 +254,7 @@ export function BillingAddressStep({ theme, initialData, onNext, onBack }: Billi
         </button>
         <button
           onClick={handleNext}
-          className="flex-1 px-4 py-3 bg-tiktok-primary text-white rounded-lg hover:bg-tiktok-primary/90 transition-colors font-sequel"
+          className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-sequel"
         >
           Continue
         </button>

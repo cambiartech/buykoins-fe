@@ -14,6 +14,7 @@ module.exports = {
           dark: '#000000',
           light: '#ffffff',
           'dark-base': '#29013a', // Deep Purple from brand guide
+          'accent-blue': '#53c4ff', // Accent Blue from brand guide
         },
       },
       fontFamily: {

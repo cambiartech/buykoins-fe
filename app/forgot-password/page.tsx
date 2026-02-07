@@ -17,7 +17,7 @@ export default function ForgotPasswordPage() {
   const toast = useToast()
   const [isLoading, setIsLoading] = useState(false)
   const [emailSent, setEmailSent] = useState(false)
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark')
+  const [theme, setTheme] = useState<'light' | 'dark'>('light')
   const [formData, setFormData] = useState({
     email: '',
   })

@@ -51,7 +51,7 @@ export function Navigation({ theme, currentView, onViewChange, onSupportClick }:
               onClick={() => onViewChange('overview')}
               className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
                 currentView === 'overview'
-                  ? isDark ? 'bg-tiktok-primary/20 text-tiktok-primary' : 'bg-tiktok-primary/10 text-tiktok-primary'
+                  ? isDark ? 'bg-blue-600 text-white' : 'bg-blue-500 text-white'
                   : isDark ? 'text-white/80 hover:text-white' : 'text-gray-700 hover:text-gray-900'
               }`}
             >
@@ -63,7 +63,7 @@ export function Navigation({ theme, currentView, onViewChange, onSupportClick }:
               onClick={() => onViewChange('transactions')}
               className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
                 currentView === 'transactions'
-                  ? isDark ? 'bg-tiktok-primary/20 text-tiktok-primary' : 'bg-tiktok-primary/10 text-tiktok-primary'
+                  ? isDark ? 'bg-blue-600 text-white' : 'bg-blue-500 text-white'
                   : isDark ? 'text-white/80 hover:text-white' : 'text-gray-700 hover:text-gray-900'
               }`}
             >
@@ -75,7 +75,7 @@ export function Navigation({ theme, currentView, onViewChange, onSupportClick }:
               onClick={() => onViewChange('settings')}
               className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
                 currentView === 'settings'
-                  ? isDark ? 'bg-tiktok-primary/20 text-tiktok-primary' : 'bg-tiktok-primary/10 text-tiktok-primary'
+                  ? isDark ? 'bg-blue-600 text-white' : 'bg-blue-500 text-white'
                   : isDark ? 'text-white/80 hover:text-white' : 'text-gray-700 hover:text-gray-900'
               }`}
             >
@@ -93,7 +93,7 @@ export function Navigation({ theme, currentView, onViewChange, onSupportClick }:
               <span className="font-sequel text-sm">Support</span>
               {unreadCount > 0 && (
                 <span className={`absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold ${
-                  isDark ? 'bg-tiktok-primary text-white' : 'bg-tiktok-primary text-white'
+                  isDark ? 'bg-blue-600 text-white' : 'bg-blue-600 text-white'
                 }`}>
                   {unreadCount > 9 ? '9+' : unreadCount}
                 </span>
@@ -108,8 +108,8 @@ export function Navigation({ theme, currentView, onViewChange, onSupportClick }:
         onClick={() => setShowNav(!showNav)}
         className={`md:hidden fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg flex items-center justify-center z-40 transition-all ${
           isDark 
-            ? 'bg-tiktok-primary hover:bg-tiktok-primary/90' 
-            : 'bg-tiktok-primary hover:bg-tiktok-primary/90'
+            ? 'bg-blue-600 hover:bg-blue-700' 
+            : 'bg-blue-500 hover:bg-blue-600'
         }`}
       >
         {showNav ? (
@@ -134,7 +134,7 @@ export function Navigation({ theme, currentView, onViewChange, onSupportClick }:
               }}
               className={`w-full px-4 py-3 text-left font-sequel text-sm transition-colors ${
                 currentView === 'overview'
-                  ? isDark ? 'bg-tiktok-primary/20 text-tiktok-primary' : 'bg-tiktok-primary/10 text-tiktok-primary'
+                  ? isDark ? 'bg-blue-600 text-white' : 'bg-blue-500 text-white'
                   : isDark ? 'text-white hover:bg-white/10' : 'text-gray-900 hover:bg-gray-50'
               }`}
             >
@@ -149,7 +149,7 @@ export function Navigation({ theme, currentView, onViewChange, onSupportClick }:
                 isDark ? 'border-white/10' : 'border-gray-200'
               } ${
                 currentView === 'transactions'
-                  ? isDark ? 'bg-tiktok-primary/20 text-tiktok-primary' : 'bg-tiktok-primary/10 text-tiktok-primary'
+                  ? isDark ? 'bg-blue-600 text-white' : 'bg-blue-500 text-white'
                   : isDark ? 'text-white hover:bg-white/10' : 'text-gray-900 hover:bg-gray-50'
               }`}
             >
@@ -164,7 +164,7 @@ export function Navigation({ theme, currentView, onViewChange, onSupportClick }:
                 isDark ? 'border-white/10' : 'border-gray-200'
               } ${
                 currentView === 'cards'
-                  ? isDark ? 'bg-tiktok-primary/20 text-tiktok-primary' : 'bg-tiktok-primary/10 text-tiktok-primary'
+                  ? isDark ? 'bg-blue-600 text-white' : 'bg-blue-500 text-white'
                   : isDark ? 'text-white hover:bg-white/10' : 'text-gray-900 hover:bg-gray-50'
               }`}
             >
@@ -179,7 +179,7 @@ export function Navigation({ theme, currentView, onViewChange, onSupportClick }:
                 isDark ? 'border-white/10' : 'border-gray-200'
               } ${
                 currentView === 'settings'
-                  ? isDark ? 'bg-tiktok-primary/20 text-tiktok-primary' : 'bg-tiktok-primary/10 text-tiktok-primary'
+                  ? isDark ? 'bg-blue-600 text-white' : 'bg-blue-500 text-white'
                   : isDark ? 'text-white hover:bg-white/10' : 'text-gray-900 hover:bg-gray-50'
               }`}
             >
@@ -199,7 +199,7 @@ export function Navigation({ theme, currentView, onViewChange, onSupportClick }:
               Support
               {unreadCount > 0 && (
                 <span className={`absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold ${
-                  isDark ? 'bg-tiktok-primary text-white' : 'bg-tiktok-primary text-white'
+                  isDark ? 'bg-blue-600 text-white' : 'bg-blue-600 text-white'
                 }`}>
                   {unreadCount > 9 ? '9+' : unreadCount}
                 </span>

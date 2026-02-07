@@ -74,7 +74,7 @@ export function ConfirmSetupStep({
             type="checkbox"
             checked={confirmed}
             onChange={(e) => setConfirmed(e.target.checked)}
-            className="mt-1 w-5 h-5 rounded border-gray-300 text-tiktok-primary focus:ring-tiktok-primary"
+            className="mt-1 w-5 h-5 rounded border-gray-300 text-tiktok-primary focus:ring-blue-600"
           />
           <span className={`text-sm font-sequel ${
             isDark ? 'text-white/80' : 'text-gray-700'
@@ -112,7 +112,7 @@ export function ConfirmSetupStep({
       <button
         onClick={handleSubmit}
         disabled={isLoading || !confirmed}
-        className="w-full bg-tiktok-primary text-white py-3 rounded-xl font-semibold hover:bg-tiktok-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sequel flex items-center justify-center space-x-2"
+        className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sequel flex items-center justify-center space-x-2"
       >
         <CheckCircle size={18} weight="regular" />
         <span>{isLoading ? 'Submitting...' : 'Confirm & Submit'}</span>

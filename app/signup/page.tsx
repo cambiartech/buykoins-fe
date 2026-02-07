@@ -28,7 +28,7 @@ export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [showVerificationModal, setShowVerificationModal] = useState(false)
   const [signupEmail, setSignupEmail] = useState('')
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark')
+  const [theme, setTheme] = useState<'light' | 'dark'>('light')
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -676,7 +676,7 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-tiktok-primary text-white px-4 py-3 rounded-lg font-semibold hover:bg-tiktok-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 mt-6"
+              className="w-full bg-[#29013a] text-white px-4 py-3 rounded-lg font-semibold hover:bg-[#3d0054] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 mt-6"
             >
               {isLoading ? (
                 <>

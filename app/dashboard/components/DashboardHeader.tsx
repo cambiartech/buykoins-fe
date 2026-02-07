@@ -1,6 +1,7 @@
 'use client'
 
 import { Sun, Moon, Gear, SignOut } from '@phosphor-icons/react'
+import { NotificationBell } from './NotificationBell'
 
 interface DashboardHeaderProps {
   theme: 'light' | 'dark'
@@ -33,31 +34,38 @@ export function DashboardHeader({
       <div className="max-w-4xl mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className={`font-monument font-bold text-lg ${
-              isDark ? 'text-white' : 'text-gray-900'
-            }`}>BuyKoins</h1>
+            <div className="mb-1">
+              <img 
+                src={isDark ? '/logos/logo-white.png' : '/logos/logo-colored.png'} 
+                alt="BuyKoins" 
+                className="h-8 w-auto"
+              />
+            </div>
             <p className={`text-xs font-sequel ${
               isDark ? 'text-white/60' : 'text-gray-600'
             }`}>
               {getGreeting()}, {userFirstName}
             </p>
           </div>
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2">
+            {/* Notification Bell */}
+            <NotificationBell theme={theme} />
+            
             <button 
               onClick={onToggleTheme}
-              className={`${isDark ? 'text-white/80 hover:text-white' : 'text-gray-700 hover:text-gray-900'} transition-colors`}
+              className={`p-2 rounded-lg ${isDark ? 'text-white/80 hover:text-white hover:bg-white/5' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'} transition-colors`}
             >
               {isDark ? <Sun size={20} weight="regular" /> : <Moon size={20} weight="regular" />}
             </button>
             <button 
               onClick={onOpenSettings}
-              className={`${isDark ? 'text-white/80 hover:text-white' : 'text-gray-700 hover:text-gray-900'} transition-colors`}
+              className={`p-2 rounded-lg ${isDark ? 'text-white/80 hover:text-white hover:bg-white/5' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'} transition-colors`}
             >
               <Gear size={20} weight="regular" />
             </button>
             <button 
               onClick={onLogout}
-              className={`${isDark ? 'text-white/80 hover:text-white' : 'text-gray-700 hover:text-gray-900'} transition-colors`}
+              className={`p-2 rounded-lg ${isDark ? 'text-white/80 hover:text-white hover:bg-white/5' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'} transition-colors`}
             >
               <SignOut size={20} weight="regular" />
             </button>

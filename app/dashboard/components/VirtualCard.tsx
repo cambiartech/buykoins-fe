@@ -64,12 +64,14 @@ export function VirtualCard({
         >
           {/* Front of Card */}
           <div
-            className={`absolute inset-0 w-full h-full rounded-2xl p-6 ${
-              isDark
-                ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900'
-                : 'bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800'
-            } text-white shadow-2xl`}
-            style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
+            className="absolute inset-0 w-full h-full rounded-2xl p-6 text-white shadow-2xl"
+            style={{ 
+              backfaceVisibility: 'hidden', 
+              WebkitBackfaceVisibility: 'hidden',
+              background: isDark 
+                ? 'linear-gradient(135deg, #29013a 0%, #1a0026 50%, #29013a 100%)'
+                : 'linear-gradient(135deg, #29013a 0%, #3d0054 50%, #29013a 100%)'
+            }}
           >
             {/* Chip */}
             <div className="absolute top-6 left-6">
@@ -100,11 +102,11 @@ export function VirtualCard({
               </div>
             </div>
 
-            {/* TikTok Branding */}
+            {/* BuyKoins Branding */}
             <div className="absolute top-6 right-6">
               <img 
-                src="/logos/tiktok.png" 
-                alt="TikTok" 
+                src="/logos/logo-white.png" 
+                alt="BuyKoins" 
                 className="h-6 w-auto"
                 onError={(e) => {
                   // Fallback if image doesn't load
@@ -124,12 +126,15 @@ export function VirtualCard({
 
           {/* Back of Card */}
           <div
-            className={`absolute inset-0 w-full h-full rounded-2xl p-6 ${
-              isDark
-                ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900'
-                : 'bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800'
-            } text-white shadow-2xl rotate-y-180`}
-            style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
+            className="absolute inset-0 w-full h-full rounded-2xl p-6 text-white shadow-2xl rotate-y-180"
+            style={{ 
+              backfaceVisibility: 'hidden', 
+              WebkitBackfaceVisibility: 'hidden', 
+              transform: 'rotateY(180deg)',
+              background: isDark 
+                ? 'linear-gradient(135deg, #29013a 0%, #1a0026 50%, #29013a 100%)'
+                : 'linear-gradient(135deg, #29013a 0%, #3d0054 50%, #29013a 100%)'
+            }}
           >
             {/* Magnetic Stripe */}
             <div className="absolute top-0 left-0 right-0 h-12 bg-black"></div>
@@ -150,11 +155,11 @@ export function VirtualCard({
               </div>
             </div>
 
-            {/* TikTok Branding */}
+            {/* BuyKoins Branding */}
             <div className="absolute bottom-4 right-6">
               <img 
-                src="/logos/tiktok.png" 
-                alt="TikTok" 
+                src="/logos/logo-white.png" 
+                alt="BuyKoins" 
                 className="h-5 w-auto opacity-80"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none'

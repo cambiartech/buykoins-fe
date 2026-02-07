@@ -172,7 +172,7 @@ export function CreditRequestModal({ isOpen, onClose, theme, onSuccess }: Credit
               }}
               placeholder="1.00"
               disabled={isLoading}
-              className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-tiktok-primary font-sequel ${
+              className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-600 font-sequel ${
                 isDark
                   ? 'bg-white/5 border-white/10 text-white placeholder-white/30'
                   : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-400'
@@ -216,7 +216,7 @@ export function CreditRequestModal({ isOpen, onClose, theme, onSuccess }: Credit
             <button
               onClick={handleSubmit}
               disabled={!creditAmount || !creditProof || isLoading}
-              className="flex-1 bg-tiktok-primary text-white py-3 rounded-xl font-semibold hover:bg-tiktok-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sequel flex items-center justify-center space-x-2"
+              className="flex-1 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sequel flex items-center justify-center space-x-2"
             >
               {isLoading ? (
                 <>

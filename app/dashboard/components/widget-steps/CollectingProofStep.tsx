@@ -111,7 +111,7 @@ export function CollectingProofStep({
           <button
             onClick={handleSubmit}
             disabled={isLoading}
-            className="flex-1 bg-tiktok-primary text-white py-3 rounded-xl font-semibold hover:bg-tiktok-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sequel"
+            className="flex-1 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sequel"
           >
             {isLoading ? 'Processing...' : 'Continue'}
           </button>

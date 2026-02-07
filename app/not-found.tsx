@@ -57,7 +57,7 @@ export default function NotFound() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             href="/"
-            className="inline-flex items-center justify-center space-x-2 bg-[#ff4aff] text-white px-8 py-4 rounded-full font-semibold hover:bg-[#ff4aff]/90 transition-all transform hover:scale-105"
+            className="inline-flex items-center justify-center space-x-2 bg-[#29013a] text-white px-8 py-4 rounded-full font-semibold hover:bg-[#3d0054] transition-all transform hover:scale-105"
           >
             <ArrowLeft size={20} weight="regular" />
             <span>Back to Home</span>

@@ -256,7 +256,7 @@ export function ChangePasswordModal({ isOpen, onClose, theme, onSuccess }: Chang
                 onBlur={() => handleBlur('currentPassword')}
                 placeholder="Enter current password"
                 disabled={isLoading}
-                className={`w-full border rounded-lg pl-10 pr-10 py-3 focus:outline-none focus:ring-2 focus:ring-tiktok-primary font-sequel ${
+                className={`w-full border rounded-lg pl-10 pr-10 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600 font-sequel ${
                   errors.currentPassword
                     ? 'border-red-500/50 focus:ring-red-500/50'
                     : isDark
@@ -312,7 +312,7 @@ export function ChangePasswordModal({ isOpen, onClose, theme, onSuccess }: Chang
                 onBlur={() => handleBlur('newPassword')}
                 placeholder="Enter new password"
                 disabled={isLoading}
-                className={`w-full border rounded-lg pl-10 pr-10 py-3 focus:outline-none focus:ring-2 focus:ring-tiktok-primary font-sequel ${
+                className={`w-full border rounded-lg pl-10 pr-10 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600 font-sequel ${
                   errors.newPassword
                     ? 'border-red-500/50 focus:ring-red-500/50'
                     : isDark
@@ -373,7 +373,7 @@ export function ChangePasswordModal({ isOpen, onClose, theme, onSuccess }: Chang
                 onBlur={() => handleBlur('confirmPassword')}
                 placeholder="Confirm new password"
                 disabled={isLoading}
-                className={`w-full border rounded-lg pl-10 pr-10 py-3 focus:outline-none focus:ring-2 focus:ring-tiktok-primary font-sequel ${
+                className={`w-full border rounded-lg pl-10 pr-10 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600 font-sequel ${
                   errors.confirmPassword
                     ? 'border-red-500/50 focus:ring-red-500/50'
                     : isDark
@@ -420,7 +420,7 @@ export function ChangePasswordModal({ isOpen, onClose, theme, onSuccess }: Chang
             <button
               type="submit"
               disabled={isLoading}
-              className="flex-1 bg-tiktok-primary text-white py-3 rounded-xl font-semibold hover:bg-tiktok-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sequel flex items-center justify-center space-x-2"
+              className="flex-1 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sequel flex items-center justify-center space-x-2"
             >
               {isLoading ? (
                 <>

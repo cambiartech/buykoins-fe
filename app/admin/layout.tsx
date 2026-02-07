@@ -22,6 +22,8 @@ import {
 } from '@phosphor-icons/react'
 import { ThemeProvider, useTheme } from './context/ThemeContext'
 import { getAdmin } from '@/lib/auth'
+import { api } from '@/lib/api'
+import { NotificationsPanel } from './components/NotificationsPanel'
 
 interface SidebarItem {
   id: string
@@ -44,6 +46,37 @@ function AdminLayoutContent({
   const [adminPermissions, setAdminPermissions] = useState<string[]>([])
   const { theme, isDark, toggleTheme } = useTheme()
   const [supportUnreadCount, setSupportUnreadCount] = useState(0)
+  const [pendingCounts, setPendingCounts] = useState({
+    creditRequests: 0,
+    onboarding: 0,
+    payouts: 0,
+  })
+
+  // Fetch pending counts from dashboard
+  useEffect(() => {
+    const fetchPendingCounts = async () => {
+      try {
+        const response = await api.admin.getDashboard()
+        if (response.success && response.data) {
+          const data = response.data as any
+          setPendingCounts({
+            creditRequests: data.summary?.pendingCreditRequests || 0,
+            onboarding: data.summary?.pendingOnboarding || 0,
+            payouts: data.summary?.pendingPayouts || 0,
+          })
+        }
+      } catch (error) {
+        console.error('Failed to fetch pending counts:', error)
+      }
+    }
+
+    if (pathname !== '/admin/login') {
+      fetchPendingCounts()
+      // Refresh counts every 30 seconds
+      const interval = setInterval(fetchPendingCounts, 30000)
+      return () => clearInterval(interval)
+    }
+  }, [pathname])
 
   // Handle window resize - auto-expand sidebar on desktop, close on mobile
   useEffect(() => {
@@ -131,9 +164,9 @@ function AdminLayoutContent({
 
   const sidebarItems: SidebarItem[] = [
     { id: 'dashboard', label: 'Dashboard', icon: House, href: '/admin' },
-    { id: 'requests', label: 'Credit Requests', icon: Clock, href: '/admin/requests' },
-    { id: 'onboarding', label: 'Onboarding', icon: UserPlus, href: '/admin/onboarding' },
-    { id: 'payouts', label: 'Payouts', icon: ArrowDownRight, href: '/admin/payouts' },
+    { id: 'requests', label: 'Credit Requests', icon: Clock, href: '/admin/requests', count: pendingCounts.creditRequests },
+    { id: 'onboarding', label: 'Onboarding', icon: UserPlus, href: '/admin/onboarding', count: pendingCounts.onboarding },
+    { id: 'payouts', label: 'Payouts', icon: ArrowDownRight, href: '/admin/payouts', count: pendingCounts.payouts },
     { id: 'users', label: 'Users', icon: Users, href: '/admin/users' },
     { id: 'transactions', label: 'Transactions', icon: CreditCard, href: '/admin/transactions' },
     { id: 'cards', label: 'Cards', icon: Cards, href: '/admin/cards' },
@@ -231,12 +264,12 @@ function AdminLayoutContent({
                     <>
                       <span className="font-sequel font-semibold flex-1 text-left text-sm sm:text-base">{item.label}</span>
                       {item.count !== undefined && item.count > 0 && (
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-sequel flex-shrink-0 ${
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-sequel font-bold flex-shrink-0 ${
                           isActive 
-                            ? 'bg-white/20' 
+                            ? 'bg-white text-blue-600' 
                             : isDark
-                            ? 'bg-tiktok-primary/20 text-tiktok-primary'
-                            : 'bg-tiktok-primary/10 text-tiktok-primary'
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-blue-600 text-white'
                         }`}>
                           {item.count}
                         </span>
@@ -301,10 +334,13 @@ function AdminLayoutContent({
               </h1>
             </div>
             <div className="flex items-center space-x-2 sm:space-x-3">
+              {/* Notifications Panel */}
+              <NotificationsPanel isDark={isDark} />
+              
               <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                isDark ? 'bg-tiktok-primary/20' : 'bg-tiktok-primary/10'
+                isDark ? 'bg-blue-600/20' : 'bg-blue-600/10'
               }`}>
-                <Shield size={16} weight="regular" className="text-tiktok-primary sm:w-5 sm:h-5" />
+                <Shield size={16} weight="regular" className="text-blue-600 sm:w-5 sm:h-5" />
               </div>
             </div>
           </div>

@@ -94,7 +94,7 @@ export function CollectingAmountStep({
             onChange={(e) => setAmount(e.target.value)}
             placeholder="0.00"
             disabled={isLoading}
-            className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-tiktok-primary font-sequel ${
+            className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-600 font-sequel ${
               exceedsBalance
                 ? 'border-red-500 focus:ring-red-500'
                 : isDark
@@ -114,7 +114,7 @@ export function CollectingAmountStep({
         <button
           type="submit"
           disabled={isLoading || !amount || parseFloat(amount) <= 0 || exceedsBalance}
-          className="w-full bg-tiktok-primary text-white py-3 rounded-xl font-semibold hover:bg-tiktok-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sequel"
+          className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sequel"
         >
           {isLoading ? 'Processing...' : 'Continue'}
         </button>

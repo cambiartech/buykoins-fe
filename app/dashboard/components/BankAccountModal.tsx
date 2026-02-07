@@ -310,7 +310,7 @@ export function BankAccountModal({
                   }}
                   placeholder="1234567890"
                   disabled={isLoading}
-                  className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-tiktok-primary font-sequel ${
+                  className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-600 font-sequel ${
                     isDark
                       ? 'bg-white/5 border-white/10 text-white placeholder-white/30'
                       : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-400'
@@ -334,7 +334,7 @@ export function BankAccountModal({
                   }}
                   placeholder="John Doe"
                   disabled={isLoading}
-                  className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-tiktok-primary font-sequel ${
+                  className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-600 font-sequel ${
                     isDark
                       ? 'bg-white/5 border-white/10 text-white placeholder-white/30'
                       : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-400'
@@ -358,7 +358,7 @@ export function BankAccountModal({
                   }}
                   placeholder="First Bank of Nigeria"
                   disabled={isLoading}
-                  className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-tiktok-primary font-sequel ${
+                  className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-600 font-sequel ${
                     isDark
                       ? 'bg-white/5 border-white/10 text-white placeholder-white/30'
                       : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-400'
@@ -382,7 +382,7 @@ export function BankAccountModal({
                   }}
                   placeholder="011"
                   disabled={isLoading}
-                  className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-tiktok-primary font-sequel ${
+                  className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-600 font-sequel ${
                     isDark
                       ? 'bg-white/5 border-white/10 text-white placeholder-white/30'
                       : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-400'
@@ -406,7 +406,7 @@ export function BankAccountModal({
                 <button
                   onClick={handleAddBankAccount}
                   disabled={isLoading || !formData.accountNumber || !formData.accountName || !formData.bankName || !formData.bankCode}
-                  className="flex-1 bg-tiktok-primary text-white py-3 rounded-xl font-semibold hover:bg-tiktok-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sequel flex items-center justify-center space-x-2"
+                  className="flex-1 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sequel flex items-center justify-center space-x-2"
                 >
                   {isLoading ? (
                     <>
@@ -474,7 +474,7 @@ export function BankAccountModal({
                       onKeyDown={(e) => handleKeyDown(index, e)}
                       onPaste={index === 0 ? handlePaste : undefined}
                       disabled={isLoading}
-                      className={`w-12 h-14 border rounded-lg text-center font-monument font-bold text-xl focus:outline-none focus:ring-2 focus:ring-tiktok-primary focus:border-tiktok-primary transition-all ${
+                      className={`w-12 h-14 border rounded-lg text-center font-monument font-bold text-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all ${
                         isDark
                           ? 'bg-white/5 border-white/10 text-white'
                           : 'bg-gray-50 border-gray-200 text-gray-900'
@@ -510,7 +510,7 @@ export function BankAccountModal({
                 <button
                   onClick={handleVerify}
                   disabled={isLoading || otpCode.join('').length !== 6}
-                  className="flex-1 bg-tiktok-primary text-white py-3 rounded-xl font-semibold hover:bg-tiktok-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sequel flex items-center justify-center space-x-2"
+                  className="flex-1 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sequel flex items-center justify-center space-x-2"
                 >
                   {isLoading ? (
                     <>

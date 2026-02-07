@@ -7,7 +7,7 @@ export interface ApiResponse<T = any> {
   errors?: Array<{ field: string; message: string }>
 }
 
-class ApiError extends Error {
+export class ApiError extends Error {
   constructor(
     message: string,
     public status: number,
@@ -661,6 +661,38 @@ export const api = {
         body: JSON.stringify(data),
       })
     },
+
+    // Notifications
+    getNotifications: async (params?: { page?: number; limit?: number; unreadOnly?: boolean }) => {
+      const queryParams = new URLSearchParams()
+      if (params?.page) queryParams.append('page', params.page.toString())
+      if (params?.limit) queryParams.append('limit', params.limit.toString())
+      if (params?.unreadOnly) queryParams.append('unreadOnly', 'true')
+      const query = queryParams.toString()
+      return request(`/admin/notifications${query ? `?${query}` : ''}`)
+    },
+
+    getUnreadNotificationCount: async () => {
+      return request('/admin/notifications/unread-count')
+    },
+
+    markNotificationAsRead: async (id: string) => {
+      return request(`/admin/notifications/${id}/read`, {
+        method: 'POST',
+      })
+    },
+
+    markAllNotificationsAsRead: async () => {
+      return request('/admin/notifications/read-all', {
+        method: 'POST',
+      })
+    },
+
+    deleteNotification: async (id: string) => {
+      return request(`/admin/notifications/${id}`, {
+        method: 'DELETE',
+      })
+    },
   },
 
   // User endpoints
@@ -943,6 +975,7 @@ export const api = {
     uploadFile: async (conversationId: string, file: File, message?: string) => {
       const formData = new FormData()
       formData.append('file', file)
+      formData.append('conversationId', conversationId) // Add conversationId to form data
       if (message) {
         formData.append('message', message)
       }
@@ -1014,6 +1047,4 @@ export const api = {
     },
   },
 }
-
-export { ApiError }
 

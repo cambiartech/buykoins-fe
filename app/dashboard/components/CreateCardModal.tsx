@@ -196,8 +196,8 @@ export function CreateCardModal({ isOpen, onClose, onSuccess, theme }: CreateCar
               onChange={(e) => setCurrency(e.target.value)}
               className={`w-full px-4 py-3 rounded-lg border font-sequel ${
                 isDark
-                  ? 'bg-white/5 border-white/10 text-white focus:ring-2 focus:ring-tiktok-primary'
-                  : 'bg-gray-50 border-gray-200 text-gray-900 focus:ring-2 focus:ring-tiktok-primary'
+                  ? 'bg-white/5 border-white/10 text-white focus:ring-2 focus:ring-blue-600'
+                  : 'bg-gray-50 border-gray-200 text-gray-900 focus:ring-2 focus:ring-blue-600'
               } focus:outline-none`}
             >
               <option value="NGN">NGN (Nigerian Naira)</option>
@@ -221,7 +221,7 @@ export function CreateCardModal({ isOpen, onClose, onSuccess, theme }: CreateCar
             <button
               type="submit"
               disabled={isLoading}
-              className="flex-1 px-4 py-3 bg-tiktok-primary text-white rounded-lg hover:bg-tiktok-primary/90 transition-colors font-sequel disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+              className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-sequel disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
             >
               {isLoading ? (
                 <>

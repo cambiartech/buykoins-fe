@@ -43,7 +43,7 @@ export function CompletedStep({
 
       <button
         onClick={onClose}
-        className="w-full bg-tiktok-primary text-white py-3 rounded-xl font-semibold hover:bg-tiktok-primary/90 transition-all font-sequel"
+        className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all font-sequel"
       >
         Close
       </button>

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Key } from '@phosphor-icons/react'
+import { api } from '@/lib/api'
 
 interface EnterAuthCodeStepProps {
   theme: 'light' | 'dark'
@@ -27,7 +28,20 @@ export function EnterAuthCodeStep({
       return
     }
 
-    await onSubmit('enter-auth-code', { authCode })
+    // Verify the OTP code
+    try {
+      const response = await api.support.verifyOnboardingCode({ code: authCode })
+      if (response.success) {
+        // OTP verified successfully, move to completed step
+        await onSubmit('enter-auth-code', { authCode, verified: true })
+      } else {
+        // Handle error - will be shown by parent component
+        await onSubmit('enter-auth-code', { authCode, verified: false })
+      }
+    } catch (error) {
+      // Handle error - will be shown by parent component
+      await onSubmit('enter-auth-code', { authCode, verified: false })
+    }
   }
 
   const handleCodeChange = (value: string) => {
@@ -77,7 +91,7 @@ export function EnterAuthCodeStep({
             placeholder="123456"
             maxLength={6}
             disabled={isLoading}
-            className={`w-full px-4 py-3 rounded-lg border text-center text-2xl font-mono tracking-widest focus:outline-none focus:ring-2 focus:ring-tiktok-primary font-sequel ${
+            className={`w-full px-4 py-3 rounded-lg border text-center text-2xl font-mono tracking-widest focus:outline-none focus:ring-2 focus:ring-blue-600 font-sequel ${
               isDark
                 ? 'bg-white/5 border-white/10 text-white placeholder-white/30'
                 : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-400'
@@ -93,7 +107,7 @@ export function EnterAuthCodeStep({
         <button
           type="submit"
           disabled={isLoading || authCode.length !== 6}
-          className="w-full bg-tiktok-primary text-white py-3 rounded-xl font-semibold hover:bg-tiktok-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sequel"
+          className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sequel"
         >
           {isLoading ? 'Validating...' : 'Continue'}
         </button>

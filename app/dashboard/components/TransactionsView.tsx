@@ -112,7 +112,7 @@ export function TransactionsView({
               if (item.type === 'credit' || item.type === 'credit_request') {
                 return <ArrowUpRight size={20} weight="regular" className="text-green-400" />
               } else if (item.type === 'payout' || item.type === 'payout_request' || item.type === 'withdrawal') {
-                return <ArrowDownRight size={20} weight="regular" className="text-tiktok-primary" />
+                return <ArrowDownRight size={20} weight="regular" className="text-blue-600" />
               } else {
                 return <Clock size={20} weight="regular" className="text-yellow-400" />
               }
@@ -122,7 +122,7 @@ export function TransactionsView({
               if (item.type === 'credit' || item.type === 'credit_request') {
                 return 'bg-green-500/20'
               } else if (item.type === 'payout' || item.type === 'payout_request' || item.type === 'withdrawal') {
-                return 'bg-tiktok-primary/20'
+                return 'bg-blue-600/20'
               } else {
                 return 'bg-yellow-500/20'
               }
@@ -180,10 +180,10 @@ export function TransactionsView({
                         </p>
                         <span className={`text-xs font-sequel px-2 py-0.5 rounded-full ${
                           item.status === 'completed'
-                            ? isDark ? 'bg-green-500/10 text-green-400' : 'bg-green-50 text-green-600'
+                            ? isDark ? 'bg-green-500/20 text-green-300' : 'bg-green-100 text-green-700'
                             : item.status === 'pending' || item.status === 'processing'
-                            ? isDark ? 'bg-yellow-500/10 text-yellow-400' : 'bg-yellow-50 text-yellow-600'
-                            : isDark ? 'bg-red-500/10 text-red-400' : 'bg-red-50 text-red-600'
+                            ? isDark ? 'bg-yellow-500/20 text-yellow-300' : 'bg-yellow-100 text-yellow-700'
+                            : isDark ? 'bg-red-500/20 text-red-300' : 'bg-red-100 text-red-700'
                         }`}>
                           {item.status}
                         </span>

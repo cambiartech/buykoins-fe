@@ -182,7 +182,7 @@ export function ProfileModal({ isOpen, onClose, theme, onProfileUpdated }: Profi
               onChange={(e) => handleChange('firstName', e.target.value)}
               placeholder="Enter first name"
               disabled={isLoading || isFetching}
-              className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-tiktok-primary font-sequel ${
+              className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-600 font-sequel ${
                 errors.firstName
                   ? 'border-red-500/50 focus:ring-red-500/50'
                   : isDark
@@ -208,7 +208,7 @@ export function ProfileModal({ isOpen, onClose, theme, onProfileUpdated }: Profi
               onChange={(e) => handleChange('lastName', e.target.value)}
               placeholder="Enter last name"
               disabled={isLoading || isFetching}
-              className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-tiktok-primary font-sequel ${
+              className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-600 font-sequel ${
                 errors.lastName
                   ? 'border-red-500/50 focus:ring-red-500/50'
                   : isDark
@@ -264,7 +264,7 @@ export function ProfileModal({ isOpen, onClose, theme, onProfileUpdated }: Profi
             <button
               type="submit"
               disabled={isLoading || isFetching}
-              className="flex-1 bg-tiktok-primary text-white py-3 rounded-xl font-semibold hover:bg-tiktok-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sequel flex items-center justify-center space-x-2"
+              className="flex-1 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sequel flex items-center justify-center space-x-2"
             >
               {isLoading ? (
                 <>

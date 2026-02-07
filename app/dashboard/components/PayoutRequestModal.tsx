@@ -243,7 +243,7 @@ export function PayoutRequestModal({
               }}
               placeholder="0.00"
               disabled={isLoading}
-              className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-tiktok-primary font-sequel ${
+              className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-600 font-sequel ${
                 isDark
                   ? 'bg-white/5 border-white/10 text-white placeholder-white/30'
                   : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-400'
@@ -259,7 +259,7 @@ export function PayoutRequestModal({
           {/* Bank Account Selection */}
           {isLoadingAccounts ? (
             <div className="flex items-center justify-center py-4">
-              <div className="w-6 h-6 border-2 border-tiktok-primary border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
             </div>
           ) : verifiedAccounts.length === 0 ? (
             <div className={`p-3 rounded-lg ${
@@ -288,7 +288,7 @@ export function PayoutRequestModal({
                     onClose()
                     onNavigateToBankAccounts()
                   }}
-                  className="w-full mt-2 px-4 py-2 bg-tiktok-primary text-white rounded-lg font-semibold hover:bg-tiktok-primary/90 transition-all text-sm font-sequel flex items-center justify-center space-x-2"
+                  className="w-full mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all text-sm font-sequel flex items-center justify-center space-x-2"
                 >
                   <Bank size={18} weight="regular" />
                   <span>Add Bank Account</span>
@@ -311,7 +311,7 @@ export function PayoutRequestModal({
                     disabled={isLoading}
                     className={`w-full p-3 rounded-lg border-2 text-left transition-all ${
                       selectedBankAccountId === account.id
-                        ? 'border-tiktok-primary bg-tiktok-primary/10'
+                        ? 'border-blue-600 bg-blue-600/10'
                         : isDark
                         ? 'border-white/10 bg-white/5 hover:border-white/20'
                         : 'border-gray-200 bg-gray-50 hover:border-gray-300'
@@ -327,8 +327,8 @@ export function PayoutRequestModal({
                           {account.isPrimary && (
                             <span className={`px-2 py-0.5 rounded-full text-xs font-sequel ${
                               isDark 
-                                ? 'bg-tiktok-primary/20 text-tiktok-primary' 
-                                : 'bg-tiktok-primary/10 text-tiktok-primary'
+                                ? 'bg-blue-600/20 text-blue-400' 
+                                : 'bg-blue-600/10 text-blue-600'
                             }`}>
                               Primary
                             </span>
@@ -341,7 +341,7 @@ export function PayoutRequestModal({
                         </p>
                       </div>
                       {selectedBankAccountId === account.id && (
-                        <div className={`w-5 h-5 rounded-full border-2 border-tiktok-primary bg-tiktok-primary flex items-center justify-center`}>
+                        <div className={`w-5 h-5 rounded-full border-2 border-blue-600 bg-blue-600 flex items-center justify-center`}>
                           <div className="w-2 h-2 rounded-full bg-white"></div>
                         </div>
                       )}
@@ -410,7 +410,7 @@ export function PayoutRequestModal({
             <button
               onClick={handleSubmit}
               disabled={isLoading || !amount || parseFloat(amount) <= 0 || !selectedBankAccountId || verifiedAccounts.length === 0}
-              className="flex-1 bg-tiktok-primary text-white py-3 rounded-xl font-semibold hover:bg-tiktok-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sequel flex items-center justify-center space-x-2"
+              className="flex-1 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sequel flex items-center justify-center space-x-2"
             >
               {isLoading ? (
                 <>

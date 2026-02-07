@@ -69,6 +69,11 @@ function AdminSupportPageContent() {
   const [uploadingFile, setUploadingFile] = useState(false)
   const [closingConversation, setClosingConversation] = useState(false)
   const [showCloseConfirm, setShowCloseConfirm] = useState(false)
+  const [showTikTokCredentialsModal, setShowTikTokCredentialsModal] = useState(false)
+  const [tiktokUsername, setTikTokUsername] = useState('')
+  const [tiktokPassword, setTikTokPassword] = useState('')
+  const [showOTPModal, setShowOTPModal] = useState(false)
+  const [otpCode, setOtpCode] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -783,6 +788,141 @@ function AdminSupportPageContent() {
     setShowStandardMessages(false)
   }
 
+  const handleTikTokCredentials = () => {
+    if (!tiktokUsername.trim() || !tiktokPassword.trim()) {
+      toast.error('Please enter both username and password')
+      return
+    }
+
+    const userName = selectedConversation?.user?.firstName 
+      ? `${selectedConversation.user.firstName}${selectedConversation.user.lastName ? ' ' + selectedConversation.user.lastName : ''}`
+      : selectedConversation?.user?.email?.split('@')[0] || 'there'
+
+    const message = `Hi ${userName},
+
+I've set up your TikTok account for payout method configuration. Please use the following credentials to log in and add the payout method:
+
+TikTok Account Credentials:
+   Username: ${tiktokUsername}
+   Password: ${tiktokPassword}
+
+Next Steps:
+1. Go to your TikTok account
+2. Log in using the credentials above
+3. Navigate to Settings → Payment & Payout
+4. Add the agency account as your payout method
+5. Once completed, click "I've Received the Credentials" in the onboarding widget
+
+Important Security Notes:
+- Do not share these credentials with anyone
+- Contact support immediately if you notice any suspicious activity
+
+Done? Request OTP:
+Once you've completed the setup above, please let me know and I'll send you the authentication code (OTP) to complete your onboarding. You can also click "Receive OTP" in the onboarding widget.
+
+If you have any questions or need assistance, feel free to ask!
+
+Best regards,
+Admin Team`
+
+    setMessageInput(message)
+    setShowTikTokCredentialsModal(false)
+    setTikTokUsername('')
+    setTikTokPassword('')
+    setShowStandardMessages(false)
+  }
+
+  const handleProvideOTP = () => {
+    if (!selectedConversation) {
+      toast.error('Please select a conversation first')
+      return
+    }
+    setOtpCode('')
+    setShowOTPModal(true)
+  }
+
+  const handleSendOTP = () => {
+    if (!otpCode.trim() || !selectedConversation) {
+      toast.error('Please enter the OTP code')
+      return
+    }
+
+    const userName = selectedConversation?.user?.firstName 
+      ? `${selectedConversation.user.firstName}${selectedConversation.user.lastName ? ' ' + selectedConversation.user.lastName : ''}`
+      : selectedConversation?.user?.email?.split('@')[0] || 'there'
+
+    const message = `Hi ${userName},
+
+Here is your 6-digit authentication code (OTP) to complete your TikTok onboarding:
+
+Authentication Code: ${otpCode}
+
+Please enter this code in the onboarding widget to verify your setup.
+
+If you have any issues, let me know!
+
+Thanks,
+Admin Team`
+
+    setMessageInput(message)
+    setShowOTPModal(false)
+    setOtpCode('')
+    toast.success('OTP message prepared!')
+  }
+
+  const handleCompleteOnboarding = async () => {
+    if (!selectedConversation?.userId) {
+      toast.error('Cannot complete onboarding: User ID not found')
+      return
+    }
+
+    const userName = selectedConversation?.user?.firstName 
+      ? `${selectedConversation.user.firstName}${selectedConversation.user.lastName ? ' ' + selectedConversation.user.lastName : ''}`
+      : selectedConversation?.user?.email?.split('@')[0] || 'User'
+
+    try {
+      setIsLoading(true)
+      
+      // Call the backend API to actually complete the onboarding
+      const response = await api.admin.completeOnboarding(
+        selectedConversation.userId,
+        `Onboarding completed via support chat by admin. User: ${userName}`
+      )
+
+      if (response.success) {
+        toast.success('Onboarding completed successfully! User will receive an email notification.')
+        
+        // Send success message in chat
+        const message = `Hi ${userName},
+
+Congratulations! 🎉
+
+Your onboarding has been successfully completed. You can now start using all the features of the platform.
+
+You should receive a confirmation email shortly with all the details.
+
+If you have any questions or need assistance, feel free to reach out anytime.
+
+Welcome aboard!
+Admin Team`
+
+        setMessageInput(message)
+        setShowStandardMessages(false)
+      } else {
+        toast.error(response.message || 'Failed to complete onboarding')
+      }
+    } catch (error) {
+      console.error('Error completing onboarding:', error)
+      if (error instanceof ApiError) {
+        toast.error(error.message || 'Failed to complete onboarding')
+      } else {
+        toast.error('Failed to complete onboarding. Please try again.')
+      }
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const filteredConversations = conversations.filter(conv => {
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
@@ -796,13 +936,34 @@ function AdminSupportPageContent() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'open':
-        return 'bg-green-500'
+        return 'text-green-500'
       case 'closed':
-        return 'bg-gray-500'
+        return 'text-gray-500'
       case 'resolved':
-        return 'bg-blue-500'
+        return 'text-blue-500'
       default:
-        return 'bg-gray-500'
+        return 'text-gray-500'
+    }
+  }
+
+  const getStatusBadgeClass = (status: string) => {
+    switch (status) {
+      case 'open':
+        return isDark 
+          ? 'bg-green-500/20 text-green-400 border-green-500/30' 
+          : 'bg-green-100 text-green-700 border-green-200'
+      case 'closed':
+        return isDark 
+          ? 'bg-gray-500/20 text-gray-400 border-gray-500/30' 
+          : 'bg-gray-100 text-gray-600 border-gray-200'
+      case 'resolved':
+        return isDark 
+          ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' 
+          : 'bg-blue-100 text-blue-700 border-blue-200'
+      default:
+        return isDark 
+          ? 'bg-gray-500/20 text-gray-400 border-gray-500/30' 
+          : 'bg-gray-100 text-gray-600 border-gray-200'
     }
   }
 
@@ -916,15 +1077,20 @@ function AdminSupportPageContent() {
                 }`}
               >
                 <div className="flex items-start justify-between mb-2">
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 flex-1 min-w-0">
                     <Circle size={8} weight="fill" className={getStatusColor(conv.status)} />
-                    <span className={`font-semibold font-sequel text-sm ${theme.text.primary}`}>
+                    <span className={`font-semibold font-sequel text-sm ${theme.text.primary} truncate`}>
                       {conv.user?.email || conv.guestId || 'Anonymous'}
                     </span>
                   </div>
-                  <span className={`text-xs font-sequel ${getPriorityColor(conv.priority)}`}>
-                    {conv.priority}
-                  </span>
+                  <div className="flex items-center gap-1.5 flex-shrink-0 ml-2">
+                    <span className={`text-xs font-sequel px-2 py-0.5 rounded border ${getStatusBadgeClass(conv.status)}`}>
+                      {conv.status}
+                    </span>
+                    <span className={`text-xs font-sequel px-2 py-0.5 rounded ${getPriorityColor(conv.priority)}`}>
+                      {conv.priority}
+                    </span>
+                  </div>
                 </div>
                 {conv.subject && (
                   <p className={`text-xs font-sequel mb-1 ${theme.text.secondary} truncate`}>
@@ -1089,6 +1255,66 @@ function AdminSupportPageContent() {
                   </button>
                 </div>
                 <div className="flex flex-wrap gap-2">
+                  {selectedConversation.type === 'onboarding' && (
+                    <>
+                      <button
+                        onClick={() => setShowTikTokCredentialsModal(true)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-sequel border ${
+                          isDark
+                            ? 'bg-blue-600/20 border-blue-600/50 hover:bg-blue-600/30 text-blue-400'
+                            : 'bg-blue-50 border-blue-200 hover:bg-blue-100 text-blue-700'
+                        }`}
+                      >
+                        📱 Send TikTok Credentials
+                      </button>
+                      <button
+                        onClick={() => setShowOTPModal(true)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-sequel border ${
+                          isDark
+                            ? 'bg-green-600/20 border-green-600/50 hover:bg-green-600/30 text-green-400'
+                            : 'bg-green-50 border-green-200 hover:bg-green-100 text-green-700'
+                        }`}
+                      >
+                        🔑 Provide OTP
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (!selectedConversation) return
+                          const userName = selectedConversation?.user?.firstName 
+                            ? `${selectedConversation.user.firstName}${selectedConversation.user.lastName ? ' ' + selectedConversation.user.lastName : ''}`
+                            : selectedConversation?.user?.email?.split('@')[0] || 'there'
+                          
+                          const message = `Hey ${userName}! 
+
+Sure, I can help verify your setup. Could you please provide a screenshot showing that you've successfully completed the TikTok payout method configuration?
+
+This will help me confirm everything is set up correctly before finalizing your onboarding.
+
+Thanks!
+Admin Team`
+                          setMessageInput(message)
+                          setShowStandardMessages(false)
+                        }}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-sequel border ${
+                          isDark
+                            ? 'bg-yellow-600/20 border-yellow-600/50 hover:bg-yellow-600/30 text-yellow-400'
+                            : 'bg-yellow-50 border-yellow-200 hover:bg-yellow-100 text-yellow-700'
+                        }`}
+                      >
+                        📸 Request Screenshot
+                      </button>
+                      <button
+                        onClick={handleCompleteOnboarding}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-sequel border ${
+                          isDark
+                            ? 'bg-purple-600/20 border-purple-600/50 hover:bg-purple-600/30 text-purple-400'
+                            : 'bg-purple-50 border-purple-200 hover:bg-purple-100 text-purple-700'
+                        }`}
+                      >
+                        ✅ Complete Onboarding
+                      </button>
+                    </>
+                  )}
                   {selectedConversation.type === 'onboarding' && standardMessages.onboarding && (
                     <>
                       {Object.entries(standardMessages.onboarding).slice(0, 3).map(([key, msg]: [string, any]) => (
@@ -1224,6 +1450,175 @@ function AdminSupportPageContent() {
         )}
       </div>
 
+      {/* TikTok Credentials Modal */}
+      {showTikTokCredentialsModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className={`w-full max-w-md rounded-2xl border ${
+            isDark 
+              ? 'bg-black border-white/20' 
+              : 'bg-white border-gray-200'
+          }`}>
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className={`font-monument font-bold text-xl ${theme.text.primary}`}>
+                  Send TikTok Credentials
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowTikTokCredentialsModal(false)
+                    setTikTokUsername('')
+                    setTikTokPassword('')
+                  }}
+                  className={`p-1 rounded-lg transition-colors ${
+                    isDark ? 'hover:bg-white/10 text-white/80' : 'hover:bg-gray-100 text-gray-700'
+                  }`}
+                >
+                  <X size={20} weight="regular" />
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className={`block text-sm font-sequel mb-2 ${theme.text.secondary}`}>
+                    TikTok Username
+                  </label>
+                  <input
+                    type="text"
+                    value={tiktokUsername}
+                    onChange={(e) => setTikTokUsername(e.target.value)}
+                    placeholder="Enter TikTok username"
+                    className={`w-full px-4 py-3 rounded-lg border font-sequel focus:outline-none focus:ring-2 focus:ring-blue-600 ${
+                      isDark
+                        ? 'bg-white/5 border-white/10 text-white placeholder-white/30'
+                        : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400'
+                    }`}
+                    autoFocus
+                  />
+                </div>
+                
+                <div>
+                  <label className={`block text-sm font-sequel mb-2 ${theme.text.secondary}`}>
+                    TikTok Password
+                  </label>
+                  <input
+                    type="text"
+                    value={tiktokPassword}
+                    onChange={(e) => setTikTokPassword(e.target.value)}
+                    placeholder="Enter TikTok password"
+                    className={`w-full px-4 py-3 rounded-lg border font-sequel focus:outline-none focus:ring-2 focus:ring-blue-600 ${
+                      isDark
+                        ? 'bg-white/5 border-white/10 text-white placeholder-white/30'
+                        : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400'
+                    }`}
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end space-x-3 mt-6">
+                <button
+                  onClick={() => {
+                    setShowTikTokCredentialsModal(false)
+                    setTikTokUsername('')
+                    setTikTokPassword('')
+                  }}
+                  className={`px-4 py-2 rounded-lg font-sequel transition-colors ${
+                    isDark
+                      ? 'bg-white/10 hover:bg-white/20 text-white'
+                      : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
+                  }`}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleTikTokCredentials}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg font-sequel hover:bg-blue-700 transition-colors"
+                >
+                  Generate Message
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* OTP Modal */}
+      {showOTPModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className={`w-full max-w-md rounded-2xl border ${
+            isDark 
+              ? 'bg-black border-white/20' 
+              : 'bg-white border-gray-200'
+          }`}>
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className={`font-monument font-bold text-xl ${theme.text.primary}`}>
+                  Send OTP to User
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowOTPModal(false)
+                    setOtpCode('')
+                  }}
+                  className={`p-1 rounded-lg transition-colors ${
+                    isDark ? 'hover:bg-white/10 text-white/80' : 'hover:bg-gray-100 text-gray-700'
+                  }`}
+                >
+                  <X size={20} weight="regular" />
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                <p className={`text-sm font-sequel ${theme.text.secondary}`}>
+                  Enter the 6-digit OTP code you received from TikTok's email. This code will be sent to the user via chat to complete their onboarding.
+                </p>
+                
+                <div>
+                  <label className={`block text-sm font-sequel mb-2 ${theme.text.secondary}`}>
+                    OTP Code from TikTok Email
+                  </label>
+                  <input
+                    type="text"
+                    value={otpCode}
+                    onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                    placeholder="Enter 6-digit code"
+                    maxLength={6}
+                    className={`w-full px-4 py-3 rounded-lg border font-mono text-lg tracking-widest text-center focus:outline-none focus:ring-2 focus:ring-blue-600 ${
+                      isDark
+                        ? 'bg-white/5 border-white/10 text-white placeholder-white/30'
+                        : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400'
+                    }`}
+                    autoFocus
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end space-x-3 mt-6">
+                <button
+                  onClick={() => {
+                    setShowOTPModal(false)
+                    setOtpCode('')
+                  }}
+                  className={`px-4 py-2 rounded-lg font-sequel transition-colors ${
+                    isDark
+                      ? 'bg-white/10 hover:bg-white/20 text-white'
+                      : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
+                  }`}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSendOTP}
+                  disabled={otpCode.length !== 6}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg font-sequel hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Send OTP
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Close Conversation Confirmation Modal */}
       {showCloseConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
@@ -1273,7 +1668,7 @@ export default function AdminSupportPage() {
   return (
     <Suspense fallback={
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-2 border-tiktok-primary border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
       </div>
     }>
       <AdminSupportPageContent />
