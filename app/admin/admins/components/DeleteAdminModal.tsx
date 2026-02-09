@@ -84,7 +84,7 @@ export function DeleteAdminModal({
         className="fixed inset-0 bg-black/50 backdrop-blur-sm"
         onClick={handleClose}
       />
-      <div className={`relative w-full max-w-md rounded-xl border ${
+      <div className={`relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-xl border ${
         isDark ? 'bg-black border-red-500/50' : 'bg-white border-red-200'
       }`}>
         {/* Header */}

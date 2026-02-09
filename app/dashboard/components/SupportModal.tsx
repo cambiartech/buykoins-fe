@@ -931,11 +931,11 @@ export function SupportModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className={`w-full max-w-2xl rounded-2xl border ${
+      <div className={`w-full max-w-2xl max-h-[90vh] rounded-2xl border ${
         isDark 
           ? 'bg-black border-white/20' 
           : 'bg-white border-gray-200'
-      } flex flex-col h-[600px]`}>
+      } flex flex-col h-[600px] min-h-0`}>
         {/* Header */}
         <div className={`flex items-center justify-between p-4 border-b ${
           isDark ? 'border-white/10' : 'border-gray-200'

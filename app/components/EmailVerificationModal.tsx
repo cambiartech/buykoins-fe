@@ -180,7 +180,7 @@ export function EmailVerificationModal({ email, onVerified, onClose }: EmailVeri
     <div className={`fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4 ${
       isDark ? 'bg-black/80' : 'bg-gray-900/80'
     }`}>
-      <div className={`border rounded-2xl p-6 sm:p-8 max-w-md w-full ${
+      <div className={`border rounded-2xl p-6 sm:p-8 max-w-md w-full max-h-[90vh] overflow-y-auto ${
         isDark 
           ? 'bg-black border-white/10' 
           : 'bg-white border-gray-200'

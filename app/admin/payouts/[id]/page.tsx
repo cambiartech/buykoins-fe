@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { ArrowLeft, X, ArrowDownRight, CheckCircle, XCircle, Clock, User, Envelope, Phone, Wallet, Bank } from '@phosphor-icons/react'
+import { ArrowLeft, ArrowDownRight, CheckCircle, XCircle, Clock, User, Envelope, Phone, Wallet, Bank, Info } from '@phosphor-icons/react'
 import { useAdminTheme } from '../../hooks/useTheme'
 import { getThemeClasses } from '../../utils/theme'
 import { api, ApiError } from '@/lib/api'
@@ -58,6 +58,8 @@ export default function PayoutDetailPage() {
   const [error, setError] = useState<string | null>(null)
   const [showProcessModal, setShowProcessModal] = useState(false)
   const [showRejectModal, setShowRejectModal] = useState(false)
+  const [transferStatus, setTransferStatus] = useState<any>(null)
+  const [loadingTransferStatus, setLoadingTransferStatus] = useState(false)
 
   useEffect(() => {
     if (payoutId) {
@@ -112,6 +114,27 @@ export default function PayoutDetailPage() {
       } else {
         toast.error('An unexpected error occurred')
       }
+      throw error
+    }
+  }
+
+  const handleCompleteManual = async (id: string, data: { transactionReference: string; notes?: string }) => {
+    try {
+      const response = await api.admin.completePayoutManual(id, data)
+      if (response.success) {
+        toast.success(response.message || 'Payout completed manually')
+        setShowProcessModal(false)
+        fetchPayoutDetails()
+      } else {
+        toast.error(response.message || 'Failed to complete payout manually')
+      }
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message || 'Failed to complete payout manually')
+      } else {
+        toast.error('An unexpected error occurred')
+      }
+      throw error
     }
   }
 
@@ -131,6 +154,28 @@ export default function PayoutDetailPage() {
       } else {
         toast.error('An unexpected error occurred')
       }
+    }
+  }
+
+  const handleCheckTransferStatus = async () => {
+    if (!payout?.transactionReference) return
+    setLoadingTransferStatus(true)
+    setTransferStatus(null)
+    try {
+      const response = await api.admin.getPayoutTransferStatus(payout.transactionReference)
+      if (response.success && response.data) {
+        setTransferStatus(response.data)
+      } else {
+        toast.error(response.message || 'Failed to get transfer status')
+      }
+    } catch (err) {
+      if (err instanceof ApiError) {
+        toast.error(err.message || 'Failed to get transfer status')
+      } else {
+        toast.error('Failed to get transfer status')
+      }
+    } finally {
+      setLoadingTransferStatus(false)
     }
   }
 
@@ -392,7 +437,7 @@ export default function PayoutDetailPage() {
           </div>
         </div>
 
-        {/* Transaction Reference & Notes */}
+        {/* Transaction Reference, Transfer Status & Notes */}
         {(payout.transactionReference || payout.notes) && (
           <div className={`mt-6 p-4 rounded-lg ${isDark ? 'bg-white/5' : 'bg-gray-50'}`}>
             <h4 className={`font-semibold mb-3 font-sequel ${theme.text.primary}`}>Additional Information</h4>
@@ -410,6 +455,34 @@ export default function PayoutDetailPage() {
                 </div>
               )}
             </div>
+            {/* Check transfer status (reconciliation) - for completed payouts with Sudo transfer ID */}
+            {payout.status === 'completed' && payout.transactionReference && (
+              <div className={`mt-4 pt-4 border-t ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
+                <div className="flex items-center space-x-2 mb-2">
+                  <Info size={16} weight="regular" className={theme.text.secondary} />
+                  <span className={`text-sm font-sequel ${theme.text.secondary}`}>Transfer status (reconciliation)</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleCheckTransferStatus}
+                  disabled={loadingTransferStatus}
+                  className={`text-sm font-sequel px-3 py-1.5 rounded-lg border transition-colors ${
+                    isDark
+                      ? 'border-white/20 text-tiktok-primary hover:bg-white/5'
+                      : 'border-gray-300 text-blue-600 hover:bg-gray-100'
+                  } disabled:opacity-50`}
+                >
+                  {loadingTransferStatus ? 'Loading...' : 'Check transfer status'}
+                </button>
+                {transferStatus && (
+                  <div className={`mt-3 p-3 rounded-lg text-xs font-sequel ${isDark ? 'bg-white/5' : 'bg-gray-100'}`}>
+                    <pre className="whitespace-pre-wrap break-all overflow-x-auto">
+                      {JSON.stringify(transferStatus, null, 2)}
+                    </pre>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 
@@ -437,6 +510,7 @@ export default function PayoutDetailPage() {
           onClose={() => setShowProcessModal(false)}
           payout={payout}
           onProcess={handleProcess}
+          onCompleteManual={handleCompleteManual}
         />
       )}
 

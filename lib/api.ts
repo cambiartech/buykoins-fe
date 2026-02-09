@@ -12,7 +12,9 @@ export class ApiError extends Error {
     message: string,
     public status: number,
     public errors?: Array<{ field: string; message: string }>,
-    public errorCode?: string
+    public errorCode?: string,
+    public sudoError?: string,
+    public hint?: string
   ) {
     super(message)
     this.name = 'ApiError'
@@ -105,7 +107,9 @@ async function request<T>(
         errorMessage,
         response.status,
         data.errors,
-        data.errorCode
+        data.errorCode,
+        data.sudoError,
+        data.hint
       )
     }
 
@@ -338,6 +342,17 @@ export const api = {
       return request(`/admin/payouts/${id}/reject`, {
         method: 'POST',
         body: JSON.stringify({ rejectionReason }),
+      })
+    },
+
+    getPayoutTransferStatus: async (transferId: string) => {
+      return request(`/admin/payouts/transfer-status/${transferId}`)
+    },
+
+    completePayoutManual: async (id: string, data: { transactionReference: string; notes?: string }) => {
+      return request(`/admin/payouts/${id}/complete-manual`, {
+        method: 'POST',
+        body: JSON.stringify(data),
       })
     },
 
@@ -618,6 +633,8 @@ export const api = {
       payoutRequestCooldownHours?: number
       maxActiveCreditRequests?: number
       maxActivePayoutRequests?: number
+      requireBvnForOnboarding?: boolean
+      requireNinForOnboarding?: boolean
     }) => {
       return request('/admin/settings/business-rules', {
         method: 'PATCH',
@@ -762,8 +779,33 @@ export const api = {
       })
     },
 
+    verifyIdentity: async (data: {
+      identityType: 'BVN' | 'NIN'
+      identityNumber: string
+      dob: string
+    }) => {
+      return request('/user/verify-identity', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      })
+    },
+
     getBankAccounts: async () => {
       return request('/user/bank-accounts')
+    },
+
+    getBanksList: async () => {
+      return request('/user/bank-accounts/banks')
+    },
+
+    nameEnquiry: async (data: {
+      bankCode: string
+      accountNumber: string
+    }) => {
+      return request('/user/bank-accounts/name-enquiry', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      })
     },
 
     setPrimaryBankAccount: async (id: string) => {

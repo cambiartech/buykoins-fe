@@ -150,17 +150,38 @@ export default function PayoutsPage() {
       }
     } catch (error) {
       if (error instanceof ApiError) {
-        const errorMsg = error.message || 'Failed to process payout'
-        toast.error(errorMsg)
-        throw new Error(errorMsg)
+        toast.error(error.message || 'Failed to process payout')
       } else if (error instanceof Error) {
         toast.error(error.message)
-        throw error
       } else {
-        const errorMsg = 'An unexpected error occurred'
+        toast.error('An unexpected error occurred')
+      }
+      throw error
+    }
+  }
+
+  const handleCompleteManual = async (id: string, data: { transactionReference: string; notes?: string }) => {
+    try {
+      const response = await api.admin.completePayoutManual(id, data)
+      if (response.success) {
+        toast.success(response.message || 'Payout completed manually')
+        await fetchPayouts()
+        setShowProcessModal(false)
+        setSelectedPayout(null)
+      } else {
+        const errorMsg = response.message || 'Failed to complete payout manually'
         toast.error(errorMsg)
         throw new Error(errorMsg)
       }
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message || 'Failed to complete payout manually')
+      } else if (error instanceof Error) {
+        toast.error(error.message)
+      } else {
+        toast.error('An unexpected error occurred')
+      }
+      throw error
     }
   }
 
@@ -459,6 +480,7 @@ export default function PayoutsPage() {
           }}
           payout={selectedPayout}
           onProcess={handleProcess}
+          onCompleteManual={handleCompleteManual}
         />
       )}
 

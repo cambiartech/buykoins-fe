@@ -82,7 +82,7 @@ export function SuspendAdminModal({
         className="fixed inset-0 bg-black/50 backdrop-blur-sm"
         onClick={handleClose}
       />
-      <div className={`relative w-full max-w-md rounded-xl border ${
+      <div className={`relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-xl border ${
         isDark ? 'bg-black border-white/10' : 'bg-white border-gray-200'
       }`}>
         {/* Header */}

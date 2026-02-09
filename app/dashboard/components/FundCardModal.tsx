@@ -92,7 +92,7 @@ export function FundCardModal({ isOpen, onClose, onSuccess, card, balance, theme
       />
 
       {/* Modal */}
-      <div className={`relative w-full max-w-md rounded-xl border ${
+      <div className={`relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-xl border ${
         isDark ? 'bg-black border-white/10' : 'bg-white border-gray-200'
       }`}>
         {/* Header */}

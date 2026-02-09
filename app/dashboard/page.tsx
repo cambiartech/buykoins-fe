@@ -21,6 +21,7 @@ import { PayoutRequestModal } from './components/PayoutRequestModal'
 import { CardsView } from './components/CardsView'
 import { Navigation } from './components/Navigation'
 import { AddFundsModal } from './components/AddFundsModal'
+import { IdentityVerificationModal } from './components/IdentityVerificationModal'
 import { CreditStatus, OnboardingStatus, View, Transaction, Activity } from './components/types'
 
 function UserDashboardContent() {
@@ -43,6 +44,8 @@ function UserDashboardContent() {
   const [showOnboardingModal, setShowOnboardingModal] = useState(false)
   const [showPayoutModal, setShowPayoutModal] = useState(false)
   const [showWidget, setShowWidget] = useState(false)
+  const [showIdentityVerificationModal, setShowIdentityVerificationModal] = useState(false)
+  const [requiredIdentityType, setRequiredIdentityType] = useState<'BVN' | 'NIN' | 'BOTH'>('BOTH')
   const [showAddFundsModal, setShowAddFundsModal] = useState(false)
   const [widgetTrigger, setWidgetTrigger] = useState<'onboarding' | 'deposit'>('onboarding')
   const [widgetContext, setWidgetContext] = useState<{ amount?: number; payoutId?: string; balance?: number } | undefined>()
@@ -318,10 +321,53 @@ function UserDashboardContent() {
             onNewCredit={() => setShowCreditModal(true)}
             onViewTransactions={() => setCurrentView('transactions')}
             onViewCreditHistory={() => setCurrentView('credit-history')}
-            onRequestOnboarding={() => {
-              setWidgetTrigger('onboarding')
-              setWidgetContext(undefined)
-              setShowWidget(true)
+            onRequestOnboarding={async () => {
+              try {
+                // First check onboarding requirements
+                const statusResponse = await api.user.getOnboardingStatus()
+                
+                if (statusResponse.success && statusResponse.data) {
+                  const requirements = (statusResponse.data as any).requirements
+                  
+                  // Check if BVN/NIN is required but user doesn't have it
+                  if (requirements && !requirements.canSubmitRequest) {
+                    // Determine what type of identity is required
+                    const needsBvn = requirements.bvnRequired && !requirements.hasBvn
+                    const needsNin = requirements.ninRequired && !requirements.hasNin
+                    
+                    if (needsBvn || needsNin) {
+                      // Determine which type to require in the modal
+                      let identityType: 'BVN' | 'NIN' | 'BOTH' = 'BOTH'
+                      if (needsBvn && needsNin) {
+                        identityType = 'BOTH'
+                      } else if (needsBvn) {
+                        identityType = 'BVN'
+                      } else if (needsNin) {
+                        identityType = 'NIN'
+                      }
+                      
+                      // Show identity verification modal
+                      setRequiredIdentityType(identityType)
+                      setShowIdentityVerificationModal(true)
+                      return
+                    }
+                  }
+                }
+                
+                // If all requirements are met, proceed with onboarding widget
+                setWidgetTrigger('onboarding')
+                setWidgetContext(undefined)
+                setShowWidget(true)
+              } catch (error) {
+                if (error instanceof ApiError) {
+                  toast.error(error.message)
+                } else {
+                  // If check fails, still allow them to try (backend will validate)
+                  setWidgetTrigger('onboarding')
+                  setWidgetContext(undefined)
+                  setShowWidget(true)
+                }
+              }
             }}
             onViewCards={() => setCurrentView('cards')}
             onAddFunds={() => setShowAddFundsModal(true)}
@@ -478,6 +524,21 @@ function UserDashboardContent() {
         onSuccess={async () => {
           // Refresh balances after successful payment
           await fetchDashboardData()
+        }}
+      />
+
+      {/* Identity Verification Modal */}
+      <IdentityVerificationModal
+        isOpen={showIdentityVerificationModal}
+        onClose={() => setShowIdentityVerificationModal(false)}
+        theme={theme}
+        requiredType={requiredIdentityType}
+        onSuccess={() => {
+          // After verification, automatically open onboarding widget
+          setShowIdentityVerificationModal(false)
+          setWidgetTrigger('onboarding')
+          setWidgetContext(undefined)
+          setShowWidget(true)
         }}
       />
     </div>

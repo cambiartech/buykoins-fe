@@ -123,7 +123,7 @@ export function CreditRequestModal({ isOpen, onClose, theme, onSuccess }: Credit
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className={`w-full max-w-md rounded-2xl border ${
+      <div className={`w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl border ${
         isDark 
           ? 'bg-black border-white/20' 
           : 'bg-white border-gray-200'

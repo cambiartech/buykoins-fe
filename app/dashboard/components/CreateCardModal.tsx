@@ -129,7 +129,7 @@ export function CreateCardModal({ isOpen, onClose, onSuccess, theme }: CreateCar
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-        <div className={`relative w-full max-w-md rounded-xl border ${
+        <div className={`relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-xl border ${
           isDark ? 'bg-black border-white/10' : 'bg-white border-gray-200'
         }`}>
           <div className="p-12 text-center">
@@ -152,7 +152,7 @@ export function CreateCardModal({ isOpen, onClose, onSuccess, theme }: CreateCar
       />
 
       {/* Modal */}
-      <div className={`relative w-full max-w-md rounded-xl border ${
+      <div className={`relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-xl border ${
         isDark ? 'bg-black border-white/10' : 'bg-white border-gray-200'
       }`}>
         {/* Header */}

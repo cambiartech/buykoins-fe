@@ -22,8 +22,12 @@ export function BusinessRulesSettings({ settings, onSave, isSaving }: BusinessRu
     payoutRequestCooldownHours: 24,
     maxActiveCreditRequests: 1,
     maxActivePayoutRequests: 1,
+    requireBvnForOnboarding: false,
+    requireNinForOnboarding: false,
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [savingBvn, setSavingBvn] = useState(false)
+  const [savingNin, setSavingNin] = useState(false)
 
   useEffect(() => {
     if (settings) {
@@ -34,6 +38,8 @@ export function BusinessRulesSettings({ settings, onSave, isSaving }: BusinessRu
         payoutRequestCooldownHours: settings.payoutRequestCooldownHours || 24,
         maxActiveCreditRequests: settings.maxActiveCreditRequests || 1,
         maxActivePayoutRequests: settings.maxActivePayoutRequests || 1,
+        requireBvnForOnboarding: settings.requireBvnForOnboarding || false,
+        requireNinForOnboarding: settings.requireNinForOnboarding || false,
       })
     }
   }, [settings])
@@ -73,6 +79,40 @@ export function BusinessRulesSettings({ settings, onSave, isSaving }: BusinessRu
     return Object.keys(newErrors).length === 0
   }
 
+  const handleBvnToggle = async () => {
+    const newValue = !formData.requireBvnForOnboarding
+    setSavingBvn(true)
+    setFormData(prev => ({ ...prev, requireBvnForOnboarding: newValue }))
+    
+    try {
+      await onSave({
+        requireBvnForOnboarding: newValue,
+      })
+    } catch (error) {
+      // Revert on error
+      setFormData(prev => ({ ...prev, requireBvnForOnboarding: !newValue }))
+    } finally {
+      setSavingBvn(false)
+    }
+  }
+
+  const handleNinToggle = async () => {
+    const newValue = !formData.requireNinForOnboarding
+    setSavingNin(true)
+    setFormData(prev => ({ ...prev, requireNinForOnboarding: newValue }))
+    
+    try {
+      await onSave({
+        requireNinForOnboarding: newValue,
+      })
+    } catch (error) {
+      // Revert on error
+      setFormData(prev => ({ ...prev, requireNinForOnboarding: !newValue }))
+    } finally {
+      setSavingNin(false)
+    }
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (validate()) {
@@ -80,6 +120,8 @@ export function BusinessRulesSettings({ settings, onSave, isSaving }: BusinessRu
         ...formData,
         minCreditRequestAmount: formData.minCreditRequestAmount || null,
         maxCreditRequestAmount: formData.maxCreditRequestAmount || null,
+        requireBvnForOnboarding: formData.requireBvnForOnboarding,
+        requireNinForOnboarding: formData.requireNinForOnboarding,
       })
     }
   }
@@ -220,6 +262,90 @@ export function BusinessRulesSettings({ settings, onSave, isSaving }: BusinessRu
             {errors.payoutRequestCooldownHours && (
               <p className="mt-1 text-sm text-red-400 font-sequel">{errors.payoutRequestCooldownHours}</p>
             )}
+          </div>
+        </div>
+      </div>
+
+      {/* Onboarding Verification Requirements */}
+      <div>
+        <h4 className={`font-semibold font-sequel text-base mb-4 ${theme.text.primary}`}>
+          Onboarding Verification Requirements
+        </h4>
+        <p className={`text-sm font-sequel mb-4 ${theme.text.secondary}`}>
+          Control whether users must provide identity verification before submitting onboarding requests. 
+          Useful for preventing fake requests or during promotional periods.
+        </p>
+        <div className="space-y-3">
+          {/* Require BVN */}
+          <div className={`flex items-center justify-between p-4 rounded-lg border ${
+            isDark ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-200'
+          }`}>
+            <div>
+              <h5 className={`font-semibold font-sequel text-sm ${theme.text.primary}`}>
+                Require BVN for Onboarding
+              </h5>
+              <p className={`text-xs font-sequel mt-0.5 ${theme.text.muted}`}>
+                Users must provide their Bank Verification Number before requesting onboarding
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={handleBvnToggle}
+              disabled={savingBvn}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                savingBvn ? 'opacity-50 cursor-not-allowed' : ''
+              } ${
+                formData.requireBvnForOnboarding ? 'bg-tiktok-primary' : isDark ? 'bg-gray-700' : 'bg-gray-300'
+              }`}
+            >
+              {savingBvn ? (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                </div>
+              ) : (
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    formData.requireBvnForOnboarding ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              )}
+            </button>
+          </div>
+
+          {/* Require NIN */}
+          <div className={`flex items-center justify-between p-4 rounded-lg border ${
+            isDark ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-200'
+          }`}>
+            <div>
+              <h5 className={`font-semibold font-sequel text-sm ${theme.text.primary}`}>
+                Require NIN for Onboarding
+              </h5>
+              <p className={`text-xs font-sequel mt-0.5 ${theme.text.muted}`}>
+                Users must provide their National Identification Number before requesting onboarding
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={handleNinToggle}
+              disabled={savingNin}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                savingNin ? 'opacity-50 cursor-not-allowed' : ''
+              } ${
+                formData.requireNinForOnboarding ? 'bg-tiktok-primary' : isDark ? 'bg-gray-700' : 'bg-gray-300'
+              }`}
+            >
+              {savingNin ? (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                </div>
+              ) : (
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    formData.requireNinForOnboarding ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              )}
+            </button>
           </div>
         </div>
       </div>
