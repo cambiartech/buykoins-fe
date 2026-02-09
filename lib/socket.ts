@@ -43,6 +43,7 @@ class SocketManager {
       }
 
       this.socket = io(`${API_BASE_URL}/support`, {
+        path: '/api/socket.io',
         auth,
         transports: ['websocket', 'polling'],
         reconnection: true,

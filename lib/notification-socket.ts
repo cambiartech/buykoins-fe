@@ -44,6 +44,7 @@ class NotificationSocketManager {
 
     this.token = token
     this.socket = io(`${API_BASE_URL}/notifications`, {
+      path: '/api/socket.io',
       auth: { token },
       transports: ['websocket', 'polling'],
       reconnection: true,

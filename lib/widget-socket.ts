@@ -27,6 +27,7 @@ class WidgetSocketManager {
       }
 
       this.socket = io(`${API_BASE_URL}/widget`, {
+        path: '/api/socket.io',
         auth,
         transports: ['websocket', 'polling'],
         reconnection: true,

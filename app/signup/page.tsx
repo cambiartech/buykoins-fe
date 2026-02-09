@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Envelope, Lock, Eye, EyeSlash, ArrowRight, Moon, Sun } from '@phosphor-icons/react'
-import PhoneInput from 'react-phone-number-input'
+import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input'
 import 'react-phone-number-input/style.css'
 import { api, ApiError } from '@/lib/api'
 import { useToast } from '@/lib/toast'
@@ -128,15 +128,13 @@ export default function SignupPage() {
     return undefined
   }
 
-  // Phone validation
+  // Phone validation – accept any valid international number (NG, UK, US, etc.)
   const validatePhone = (phone: string | undefined): string | undefined => {
-    const phoneValue = phone || ''
-    if (!phoneValue || phoneValue.trim() === '') {
+    const phoneValue = (phone || '').trim()
+    if (!phoneValue) {
       return 'Phone number is required'
     }
-    // react-phone-number-input handles format validation, just check if it exists
-    // Minimum length check (country code + at least a few digits)
-    if (phoneValue.length < 8) {
+    if (!isValidPhoneNumber(phoneValue)) {
       return 'Please enter a valid phone number'
     }
     return undefined
