@@ -1,6 +1,8 @@
 import { io, Socket } from 'socket.io-client'
 
+// Base URL for Socket.IO: origin only, no /api (namespace is /notifications, path is /api/socket.io)
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://buykoins-be-production.up.railway.app'
+const SOCKET_BASE_URL = API_BASE_URL.replace(/\/api\/?$/, '')
 
 export interface Notification {
   id: string
@@ -43,7 +45,7 @@ class NotificationSocketManager {
     this.disconnect() // Disconnect any old connection
 
     this.token = token
-    this.socket = io(`${API_BASE_URL}/notifications`, {
+    this.socket = io(`${SOCKET_BASE_URL}/notifications`, {
       path: '/api/socket.io',
       auth: { token },
       transports: ['websocket', 'polling'],

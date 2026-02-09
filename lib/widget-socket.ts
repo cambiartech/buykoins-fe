@@ -1,6 +1,8 @@
 import { io, Socket } from 'socket.io-client'
 
+// Base URL for Socket.IO: origin only, no /api (namespace is /widget, path is /api/socket.io)
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+const SOCKET_BASE_URL = API_BASE_URL.replace(/\/api\/?$/, '')
 
 export interface WidgetSession {
   sessionId: string
@@ -26,7 +28,7 @@ class WidgetSocketManager {
         auth.token = token
       }
 
-      this.socket = io(`${API_BASE_URL}/widget`, {
+      this.socket = io(`${SOCKET_BASE_URL}/widget`, {
         path: '/api/socket.io',
         auth,
         transports: ['websocket', 'polling'],

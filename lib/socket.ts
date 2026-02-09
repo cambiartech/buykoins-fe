@@ -1,6 +1,8 @@
 import { io, Socket } from 'socket.io-client'
 
+// Base URL for Socket.IO: origin only, no /api (namespace is /support, path is /api/socket.io)
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+const SOCKET_BASE_URL = API_BASE_URL.replace(/\/api\/?$/, '')
 
 export interface SocketConnectionData {
   type: 'user' | 'admin' | 'guest'
@@ -42,7 +44,7 @@ class SocketManager {
         auth.guestId = guestId
       }
 
-      this.socket = io(`${API_BASE_URL}/support`, {
+      this.socket = io(`${SOCKET_BASE_URL}/support`, {
         path: '/api/socket.io',
         auth,
         transports: ['websocket', 'polling'],
