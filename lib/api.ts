@@ -570,6 +570,59 @@ export const api = {
         body: JSON.stringify({ password, verificationCode }),
       })
     },
+
+    // Notifications
+    getNotifications: async (params?: { page?: number; limit?: number; unreadOnly?: boolean }) => {
+      const queryParams = new URLSearchParams()
+      if (params?.page) queryParams.append('page', params.page.toString())
+      if (params?.limit) queryParams.append('limit', params.limit.toString())
+      if (params?.unreadOnly) queryParams.append('unreadOnly', 'true')
+      const query = queryParams.toString()
+      return request(`/admin/notifications${query ? `?${query}` : ''}`)
+    },
+
+    getUnreadNotificationCount: async () => {
+      return request('/admin/notifications/unread-count')
+    },
+
+    markNotificationAsRead: async (id: string) => {
+      return request(`/admin/notifications/${id}/read`, {
+        method: 'POST',
+      })
+    },
+
+    markAllNotificationsAsRead: async () => {
+      return request('/admin/notifications/read-all', {
+        method: 'POST',
+      })
+    },
+
+    deleteNotification: async (id: string) => {
+      return request(`/admin/notifications/${id}`, {
+        method: 'DELETE',
+      })
+    },
+
+    /** Broadcast announcement (super_admin only). Optional audience or userIds; optional messageFormat 'html'. */
+    broadcastAnnouncement: async (params: {
+      title: string
+      message: string
+      messageFormat?: 'plain' | 'html'
+      userIds?: string[]
+      audience?: 'all' | 'active' | 'onboarded'
+    }) => {
+      const body: Record<string, unknown> = { title: params.title, message: params.message }
+      if (params.messageFormat === 'html') body.messageFormat = 'html'
+      if (params.userIds?.length) {
+        body.userIds = params.userIds
+      } else if (params.audience && params.audience !== 'all') {
+        body.audience = params.audience
+      }
+      return request<{ sent: number }>('/admin/notifications/broadcast', {
+        method: 'POST',
+        body: JSON.stringify(body),
+      })
+    },
   },
 
   // Settings endpoints
@@ -676,59 +729,6 @@ export const api = {
       return request('/admin/settings/widget', {
         method: 'PATCH',
         body: JSON.stringify(data),
-      })
-    },
-
-    // Notifications
-    getNotifications: async (params?: { page?: number; limit?: number; unreadOnly?: boolean }) => {
-      const queryParams = new URLSearchParams()
-      if (params?.page) queryParams.append('page', params.page.toString())
-      if (params?.limit) queryParams.append('limit', params.limit.toString())
-      if (params?.unreadOnly) queryParams.append('unreadOnly', 'true')
-      const query = queryParams.toString()
-      return request(`/admin/notifications${query ? `?${query}` : ''}`)
-    },
-
-    getUnreadNotificationCount: async () => {
-      return request('/admin/notifications/unread-count')
-    },
-
-    markNotificationAsRead: async (id: string) => {
-      return request(`/admin/notifications/${id}/read`, {
-        method: 'POST',
-      })
-    },
-
-    markAllNotificationsAsRead: async () => {
-      return request('/admin/notifications/read-all', {
-        method: 'POST',
-      })
-    },
-
-    deleteNotification: async (id: string) => {
-      return request(`/admin/notifications/${id}`, {
-        method: 'DELETE',
-      })
-    },
-
-    /** Broadcast announcement (super_admin only). Optional audience or userIds; optional messageFormat 'html'. */
-    broadcastAnnouncement: async (params: {
-      title: string
-      message: string
-      messageFormat?: 'plain' | 'html'
-      userIds?: string[]
-      audience?: 'all' | 'active' | 'onboarded'
-    }) => {
-      const body: Record<string, unknown> = { title: params.title, message: params.message }
-      if (params.messageFormat === 'html') body.messageFormat = 'html'
-      if (params.userIds?.length) {
-        body.userIds = params.userIds
-      } else if (params.audience && params.audience !== 'all') {
-        body.audience = params.audience
-      }
-      return request<{ sent: number }>('/admin/notifications/broadcast', {
-        method: 'POST',
-        body: JSON.stringify(body),
       })
     },
   },
