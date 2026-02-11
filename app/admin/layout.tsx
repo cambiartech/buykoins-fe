@@ -18,7 +18,8 @@ import {
   House,
   Gear,
   ChatCircle,
-  Cards
+  Cards,
+  Megaphone,
 } from '@phosphor-icons/react'
 import { ThemeProvider, useTheme } from './context/ThemeContext'
 import { getAdmin } from '@/lib/auth'
@@ -172,6 +173,7 @@ function AdminLayoutContent({
     { id: 'cards', label: 'Cards', icon: Cards, href: '/admin/cards' },
     { id: 'finance', label: 'Finance Report', icon: Wallet, href: '/admin/finance' },
     { id: 'support', label: 'Support', icon: ChatCircle, href: '/admin/support', count: supportUnreadCount },
+    { id: 'broadcast', label: 'Email blast', icon: Megaphone, href: '/admin/broadcast' },
     { id: 'admins', label: 'Admin Management', icon: Shield, href: '/admin/admins' },
     { id: 'settings', label: 'Settings', icon: Gear, href: '/admin/settings' },
   ]
@@ -230,6 +232,9 @@ function AdminLayoutContent({
               
               // Hide certain items based on role/permissions
               if (item.id === 'admins' && adminRole !== 'super_admin') {
+                return false
+              }
+              if (item.id === 'broadcast' && adminRole !== 'super_admin') {
                 return false
               }
               if (item.id === 'settings' && adminRole !== 'super_admin' && !adminPermissions.includes('settings')) {

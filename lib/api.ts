@@ -710,6 +710,27 @@ export const api = {
         method: 'DELETE',
       })
     },
+
+    /** Broadcast announcement (super_admin only). Optional audience or userIds; optional messageFormat 'html'. */
+    broadcastAnnouncement: async (params: {
+      title: string
+      message: string
+      messageFormat?: 'plain' | 'html'
+      userIds?: string[]
+      audience?: 'all' | 'active' | 'onboarded'
+    }) => {
+      const body: Record<string, unknown> = { title: params.title, message: params.message }
+      if (params.messageFormat === 'html') body.messageFormat = 'html'
+      if (params.userIds?.length) {
+        body.userIds = params.userIds
+      } else if (params.audience && params.audience !== 'all') {
+        body.audience = params.audience
+      }
+      return request<{ sent: number }>('/admin/notifications/broadcast', {
+        method: 'POST',
+        body: JSON.stringify(body),
+      })
+    },
   },
 
   // User endpoints
