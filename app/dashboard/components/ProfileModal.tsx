@@ -48,11 +48,12 @@ export function ProfileModal({ isOpen, onClose, theme, onProfileUpdated }: Profi
       const response = await api.user.getProfile()
       if (response.success && response.data) {
         const data = response.data as any
+        const rawEmail = data.email || ''
         setFormData({
           firstName: data.firstName || '',
           lastName: data.lastName || '',
           phone: data.phone || '',
-          email: data.email || '',
+          email: isPlaceholderEmail(rawEmail) ? '' : rawEmail,
         })
       }
     } catch (error) {
@@ -199,7 +200,7 @@ export function ProfileModal({ isOpen, onClose, theme, onProfileUpdated }: Profi
                 type="email"
                 value={formData.email}
                 onChange={(e) => handleChange('email', e.target.value)}
-                placeholder="you@example.com"
+                placeholder="Enter your email"
                 disabled={isLoading || isFetching}
                 className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-600 font-sequel ${
                   errors.email
@@ -271,7 +272,7 @@ export function ProfileModal({ isOpen, onClose, theme, onProfileUpdated }: Profi
           </div>
 
           {/* Phone */}
-          <div>
+          <div className={isDark ? 'phone-input-dark' : 'phone-input-light'}>
             <label className={`block text-sm font-medium mb-2 font-sequel ${
               isDark ? 'text-white/80' : 'text-gray-700'
             }`}>
@@ -320,6 +321,8 @@ export function ProfileModal({ isOpen, onClose, theme, onProfileUpdated }: Profi
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                   <span>Saving...</span>
                 </>
+              ) : showEmailField && !formData.email?.trim() ? (
+                <span>Provide email</span>
               ) : (
                 <span>Save Changes</span>
               )}

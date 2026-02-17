@@ -15,6 +15,10 @@ interface OnboardingGuidePopupProps {
   theme: 'light' | 'dark'
   /** When true, remember dismissal in localStorage so we do not show again for this step. */
   rememberDismissal?: boolean
+  /** When provided, primary button performs this action (e.g. open add-email screen) instead of just closing. */
+  onPrimaryAction?: () => void
+  /** Label for the primary button when actionable (e.g. "Provide email"). If not set and onPrimaryAction is set, uses "Continue". */
+  primaryButtonLabel?: string
 }
 
 export function OnboardingGuidePopup({
@@ -25,9 +29,13 @@ export function OnboardingGuidePopup({
   totalSteps,
   theme,
   rememberDismissal = true,
+  onPrimaryAction,
+  primaryButtonLabel,
 }: OnboardingGuidePopupProps) {
   const isDark = theme === 'dark'
   const storageKey = `${DISMISS_KEY_PREFIX}${step.id}`
+  const hasAction = Boolean(onPrimaryAction)
+  const label = primaryButtonLabel || (hasAction ? 'Continue' : 'Got it')
 
   const handleClose = () => {
     if (rememberDismissal && typeof window !== 'undefined') {
@@ -94,17 +102,31 @@ export function OnboardingGuidePopup({
           <p className={`mt-3 text-sm font-sequel ${isDark ? 'text-white/60' : 'text-gray-500'}`}>
             {step.hint}
           </p>
-          <button
-            type="button"
-            onClick={handleClose}
-            className={`mt-5 w-full py-2.5 rounded-xl font-semibold font-sequel text-sm transition-colors ${
-              isDark
-                ? 'bg-white/10 text-white hover:bg-white/15'
-                : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-            }`}
-          >
-            Got it
-          </button>
+          <div className={`mt-5 flex gap-3 ${hasAction ? 'flex-col-reverse sm:flex-row' : ''}`}>
+            {hasAction && (
+              <button
+                type="button"
+                onClick={() => {
+                  handleClose()
+                  onPrimaryAction?.()
+                }}
+                className="w-full py-2.5 rounded-xl font-semibold font-sequel text-sm bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+              >
+                {label}
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={handleClose}
+              className={`w-full py-2.5 rounded-xl font-semibold font-sequel text-sm transition-colors ${
+                isDark
+                  ? 'bg-white/10 text-white hover:bg-white/15'
+                  : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+              }`}
+            >
+              {hasAction ? 'Maybe later' : 'Got it'}
+            </button>
+          </div>
         </div>
       </div>
     </div>

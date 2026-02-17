@@ -112,6 +112,36 @@ html.light .PhoneInputCountrySelect {
   opacity: 0.3;
 }
 
+/* Theme-scoped phone input (e.g. inside modals so it matches modal theme) */
+.phone-input-light .PhoneInputInput {
+  background: rgb(249 250 251);
+  border-color: rgb(209 213 219);
+  color: rgb(17 24 39);
+}
+.phone-input-light .PhoneInputInput::placeholder {
+  color: rgb(156 163 175);
+}
+.phone-input-light .PhoneInputInput:focus {
+  border-color: var(--tiktok-primary);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 242, 234, 0.2);
+}
+.phone-input-light .PhoneInputCountrySelect {
+  color: rgb(17 24 39);
+}
+
+.phone-input-dark .PhoneInputInput {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgb(255 255 255);
+}
+.phone-input-dark .PhoneInputInput::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+.phone-input-dark .PhoneInputCountrySelect {
+  color: rgba(255, 255, 255, 0.7);
+}
+
 /* ABC Monument Grotesk Font Faces */
 @font-face {
   font-family: 'ABCMonumentGrotesk';

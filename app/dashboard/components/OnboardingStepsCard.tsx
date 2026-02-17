@@ -65,6 +65,13 @@ export function OnboardingStepsCard({
   const canRequestOnboarding =
     (authType === 'email' && hasTiktok) || (authType === 'tiktok' && hasRealEmail)
 
+  const completedCount = steps.filter((s) =>
+    authType === 'email'
+      ? (s.id === 'link_tiktok' && hasTiktok) || (s.id === 'request_onboarding' && onboardingStatus === 'completed')
+      : (s.id === 'add_email' && hasRealEmail) || (s.id === 'request_onboarding' && onboardingStatus === 'completed')
+  ).length
+  const totalCount = steps.length
+
   return (
     <>
       <div
@@ -72,6 +79,35 @@ export function OnboardingStepsCard({
           isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'
         }`}
       >
+        {/* Profile completion progress bar – click to open guide popup */}
+        {currentInfo && (
+          <button
+            type="button"
+            onClick={() => setShowGuidePopup(true)}
+            className={`w-full px-4 py-3 flex items-center justify-between gap-3 text-left border-b ${
+              isDark ? 'border-white/10 hover:bg-white/5' : 'border-gray-100 hover:bg-gray-50'
+            } transition-colors`}
+          >
+            <span className={`text-xs font-sequel ${isDark ? 'text-white/70' : 'text-gray-600'}`}>
+              Profile setup
+            </span>
+            <div className="flex items-center gap-2">
+              <div
+                className={`h-1.5 rounded-full overflow-hidden w-24 ${
+                  isDark ? 'bg-white/10' : 'bg-gray-200'
+                }`}
+              >
+                <div
+                  className="h-full rounded-full bg-blue-500 transition-all"
+                  style={{ width: `${(completedCount / totalCount) * 100}%` }}
+                />
+              </div>
+              <span className={`text-xs font-sequel font-medium ${isDark ? 'text-white/80' : 'text-gray-700'}`}>
+                {completedCount} of {totalCount} complete
+              </span>
+            </div>
+          </button>
+        )}
         <div className="p-4 sm:p-5">
           <div className="flex items-center gap-2 mb-4">
             <Clock size={20} weight="regular" className={isDark ? 'text-amber-400' : 'text-amber-600'} />
@@ -204,6 +240,8 @@ export function OnboardingStepsCard({
           totalSteps={currentInfo.total}
           theme={theme}
           rememberDismissal
+          onPrimaryAction={currentInfo.step.actionTarget === 'open_profile' ? onOpenProfile : undefined}
+          primaryButtonLabel={currentInfo.step.actionTarget === 'open_profile' ? 'Provide email' : undefined}
         />
       )}
     </>
