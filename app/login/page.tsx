@@ -1,5 +1,6 @@
 'use client'
 
+import { Suspense } from 'react'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -15,7 +16,7 @@ interface FormErrors {
   general?: string
 }
 
-export default function LoginPage() {
+function LoginPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const toast = useToast()
@@ -647,5 +648,17 @@ export default function LoginPage() {
         />
       )}
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-tiktok-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    }>
+      <LoginPageContent />
+    </Suspense>
   )
 }
