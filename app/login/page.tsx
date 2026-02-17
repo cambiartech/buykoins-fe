@@ -2,11 +2,12 @@
 
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { Envelope, Lock, Eye, EyeSlash, ArrowRight, Moon, Sun } from '@phosphor-icons/react'
-import { api, ApiError } from '@/lib/api'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Envelope, Lock, Eye, EyeSlash, ArrowRight, Moon, Sun, PaperPlaneTilt } from '@phosphor-icons/react'
+import { api, ApiError, getTiktokLinkUrl } from '@/lib/api'
 import { useToast } from '@/lib/toast'
 import { setAuthToken, setRefreshToken, setUser } from '@/lib/auth'
+import { EmailVerificationModal } from '@/app/components/EmailVerificationModal'
 
 interface FormErrors {
   email?: string
@@ -16,6 +17,7 @@ interface FormErrors {
 
 export default function LoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const toast = useToast()
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -30,6 +32,37 @@ export default function LoginPage() {
     email: false,
     password: false,
   })
+  const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null)
+  const [otpSent, setOtpSent] = useState(false)
+  const [sendingOtp, setSendingOtp] = useState(false)
+
+  // Sign in / Sign up with TikTok callback: backend redirects to /login?tiktok_login=1&token=...&refresh_token=... or ?tiktok_error=...
+  useEffect(() => {
+    const tiktokLogin = searchParams.get('tiktok_login')
+    const token = searchParams.get('token')
+    const refreshToken = searchParams.get('refresh_token')
+    const tiktokError = searchParams.get('tiktok_error')
+    const tiktokErrorDesc = searchParams.get('tiktok_error_description')
+
+    if (tiktokLogin === '1' && token && refreshToken) {
+      setAuthToken(token)
+      setRefreshToken(refreshToken)
+      window.history.replaceState({}, '', '/login')
+      api.user.getProfile()
+        .then((res) => {
+          const data = res.data as any
+          const userObj = data?.user ?? data
+          if (userObj) setUser(userObj)
+        })
+        .catch(() => {})
+        .finally(() => router.push('/dashboard'))
+      return
+    }
+    if (tiktokError || tiktokErrorDesc) {
+      toast.error(tiktokErrorDesc || tiktokError || 'TikTok sign in failed.')
+      window.history.replaceState({}, '', '/login')
+    }
+  }, [searchParams, router, toast])
 
   useEffect(() => {
     // Get system preference or default to light
@@ -187,16 +220,16 @@ export default function LoginPage() {
       }
     } catch (error) {
       setIsLoading(false)
-      
+
       if (error instanceof ApiError) {
-        // Always show the error message from backend
+        if (error.errorCode === 'AUTH_EMAIL_NOT_VERIFIED') {
+          setUnverifiedEmail(formData.email)
+          setErrors({})
+          return
+        }
         const errorMessage = error.message || 'An error occurred. Please try again.'
-        
-        // Show in form AND toast
         setErrors({ general: errorMessage })
         toast.error(errorMessage)
-        
-        // Handle field-specific errors if they exist
         if (error.errors && error.errors.length > 0) {
           const fieldErrors: FormErrors = { general: errorMessage }
           error.errors.forEach((err) => {
@@ -212,6 +245,39 @@ export default function LoginPage() {
         toast.error(errorMsg)
       }
     }
+  }
+
+  const handleSendVerificationCode = async () => {
+    if (!unverifiedEmail) return
+    setSendingOtp(true)
+    try {
+      const response = await api.auth.resendVerification(unverifiedEmail)
+      if (response.success) {
+        toast.success(response.message || 'Verification code sent! Check your email.')
+        setOtpSent(true)
+      } else {
+        toast.error(response.message || 'Failed to send code. Please try again.')
+      }
+    } catch (err) {
+      if (err instanceof ApiError) {
+        toast.error(err.message || 'Failed to send code. Please try again.')
+      } else {
+        toast.error('An unexpected error occurred.')
+      }
+    } finally {
+      setSendingOtp(false)
+    }
+  }
+
+  const handleVerified = () => {
+    setUnverifiedEmail(null)
+    setOtpSent(false)
+    router.push('/dashboard')
+  }
+
+  const handleCloseVerification = () => {
+    setUnverifiedEmail(null)
+    setOtpSent(false)
   }
 
   // Handle social login (mock)
@@ -259,8 +325,8 @@ export default function LoginPage() {
             isDark ? 'text-white/60' : 'text-gray-600'
           }`}>Sign in to your account</p>
 
-          {/* General Error Message */}
-          {errors.general && (
+          {/* General Error Message (only when not in unverified flow) */}
+          {!unverifiedEmail && errors.general && (
             <div className={`mb-4 p-4 rounded-lg ${
               isDark 
                 ? 'bg-red-500/20 border border-red-500/50' 
@@ -272,8 +338,64 @@ export default function LoginPage() {
             </div>
           )}
 
+          {/* Unverified email: show option to send OTP */}
+          {unverifiedEmail && !otpSent && (
+            <div className={`mb-6 p-5 rounded-xl border ${
+              isDark ? 'bg-amber-500/10 border-amber-500/30' : 'bg-amber-50 border-amber-200'
+            }`}>
+              <div className="flex items-start gap-3">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  isDark ? 'bg-amber-500/20' : 'bg-amber-200'
+                }`}>
+                  <Envelope size={20} weight="regular" className="text-amber-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className={`font-sequel font-semibold text-sm mb-1 ${
+                    isDark ? 'text-amber-200' : 'text-amber-900'
+                  }`}>
+                    Verify your email
+                  </p>
+                  <p className={`text-sm font-sequel mb-4 ${
+                    isDark ? 'text-white/80' : 'text-amber-800'
+                  }`}>
+                    Please verify your email before logging in. We can send you a new verification code to <span className="font-medium">{unverifiedEmail}</span>.
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    <button
+                      type="button"
+                      onClick={handleSendVerificationCode}
+                      disabled={sendingOtp}
+                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-sequel font-semibold text-sm bg-amber-500 hover:bg-amber-600 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {sendingOtp ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          Sending…
+                        </>
+                      ) : (
+                        <>
+                          <PaperPlaneTilt size={18} weight="regular" />
+                          Send verification code
+                        </>
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setUnverifiedEmail(null) }}
+                      className={`font-sequel text-sm ${
+                        isDark ? 'text-white/70 hover:text-white' : 'text-amber-800 hover:text-amber-900'
+                      }`}
+                    >
+                      Back to login
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Social Login Options */}
-          <div className="flex gap-3 mb-6">
+          {/* <div className="flex gap-3 mb-6">
             <button
               onClick={() => handleSocialLogin('google')}
               disabled={isLoading}
@@ -283,7 +405,6 @@ export default function LoginPage() {
                   : 'bg-white border border-gray-200 text-gray-900 hover:bg-gray-50'
               }`}
             >
-              {/* Google Icon */}
               <svg width="20" height="20" viewBox="0 0 24 24" className="flex-shrink-0">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                 <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -302,15 +423,15 @@ export default function LoginPage() {
                   : 'bg-white border border-gray-200 text-gray-900 hover:bg-gray-50'
               }`}
             >
-              {/* TikTok Icon */}
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="flex-shrink-0 text-tiktok-primary">
                 <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
               </svg>
               <span className="font-sequel text-xs sm:text-sm">TikTok</span>
             </button>
-          </div>
+          </div> */}
 
-          {/* Divider */}
+          {/* Divider (hide when showing unverified email card) */}
+          {!unverifiedEmail && (
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
               <div className={`w-full border-t ${
@@ -325,8 +446,32 @@ export default function LoginPage() {
               }`}>OR</span>
             </div>
           </div>
+          )}
 
-          {/* Email Login Form */}
+          {/* Continue with TikTok */}
+          {!unverifiedEmail && (
+          <div className="mb-4">
+            <button
+              type="button"
+              onClick={() => {
+                const returnUrl = typeof window !== 'undefined' ? `${window.location.origin}/login` : ''
+                if (returnUrl) window.location.href = getTiktokLinkUrl(returnUrl)
+              }}
+              disabled={isLoading}
+              className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border font-semibold font-sequel text-sm transition-all ${
+                isDark
+                  ? 'border-white/20 text-white hover:bg-white/5'
+                  : 'border-gray-300 text-gray-800 hover:bg-gray-50'
+              } disabled:opacity-50`}
+            >
+              <span className="font-bold text-[#00f2ea]">TikTok</span>
+              <span>Continue with TikTok</span>
+            </button>
+          </div>
+          )}
+
+          {/* Email Login Form (hide when showing unverified email card) */}
+          {!unverifiedEmail && (
           <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             {/* Email Field */}
             <div>
@@ -471,6 +616,7 @@ export default function LoginPage() {
               )}
             </button>
           </form>
+          )}
 
           {/* Signup Link */}
           <p className={`text-sm text-center mt-6 font-sequel ${
@@ -491,6 +637,15 @@ export default function LoginPage() {
           backgroundImage: 'url(/bg/artboard.png)',
         }}
       ></div>
+
+      {/* OTP verification modal (after user requested code) */}
+      {otpSent && unverifiedEmail && (
+        <EmailVerificationModal
+          email={unverifiedEmail}
+          onVerified={handleVerified}
+          onClose={handleCloseVerification}
+        />
+      )}
     </div>
   )
 }

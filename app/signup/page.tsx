@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Envelope, Lock, Eye, EyeSlash, ArrowRight, Moon, Sun } from '@phosphor-icons/react'
 import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input'
 import 'react-phone-number-input/style.css'
-import { api, ApiError } from '@/lib/api'
+import { api, ApiError, getTiktokLinkUrl } from '@/lib/api'
 import { useToast } from '@/lib/toast'
 import { EmailVerificationModal } from '@/app/components/EmailVerificationModal'
 
@@ -352,7 +352,7 @@ export default function SignupPage() {
 
 
           {/* Social Signup Options */}
-          <div className="flex gap-3 mb-6">
+          {/* <div className="flex gap-3 mb-6">
             <button
               onClick={() => handleSocialSignup('google')}
               disabled={isLoading}
@@ -362,7 +362,6 @@ export default function SignupPage() {
                   : 'bg-white border border-gray-200 text-gray-900 hover:bg-gray-50'
               }`}
             >
-              {/* Google Icon */}
               <svg width="20" height="20" viewBox="0 0 24 24" className="flex-shrink-0">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                 <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -381,13 +380,12 @@ export default function SignupPage() {
                   : 'bg-white border border-gray-200 text-gray-900 hover:bg-gray-50'
               }`}
             >
-              {/* TikTok Icon */}
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="flex-shrink-0 text-tiktok-primary">
                 <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
               </svg>
               <span className="font-sequel text-xs sm:text-sm">TikTok</span>
             </button>
-          </div>
+          </div> */}
 
           {/* Divider */}
           <div className="relative my-6">
@@ -403,6 +401,26 @@ export default function SignupPage() {
                   : 'bg-gray-50 text-gray-500'
               }`}>OR</span>
             </div>
+          </div>
+
+          {/* Continue with TikTok */}
+          <div className="mb-4">
+            <button
+              type="button"
+              onClick={() => {
+                const returnUrl = typeof window !== 'undefined' ? `${window.location.origin}/login` : ''
+                if (returnUrl) window.location.href = getTiktokLinkUrl(returnUrl)
+              }}
+              disabled={isLoading}
+              className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border font-semibold font-sequel text-sm transition-all ${
+                isDark
+                  ? 'border-white/20 text-white hover:bg-white/5'
+                  : 'border-gray-300 text-gray-800 hover:bg-gray-50'
+              } disabled:opacity-50`}
+            >
+              <span className="font-bold text-[#00f2ea]">TikTok</span>
+              <span>Continue with TikTok</span>
+            </button>
           </div>
 
           {/* Email Signup Form */}

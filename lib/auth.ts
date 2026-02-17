@@ -10,6 +10,10 @@ export interface User {
   balance?: number
   onboardingStatus?: 'pending' | 'completed'
   emailVerified?: boolean
+  /** Set after user completes "Add TikTok Account" flow. */
+  tiktokOpenId?: string | null
+  tiktokDisplayName?: string | null
+  tiktokAvatarUrl?: string | null
 }
 
 export interface Admin {

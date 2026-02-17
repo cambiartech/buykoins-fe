@@ -1,5 +1,10 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
 
+/** Build URL to start TikTok OAuth link flow. Backend exchanges code and redirects back to returnUrl with tiktok_linked=1 or tiktok_error. */
+export function getTiktokLinkUrl(returnUrl: string): string {
+  return `${API_BASE_URL}/auth/tiktok?returnUrl=${encodeURIComponent(returnUrl)}`
+}
+
 export interface ApiResponse<T = any> {
   success: boolean
   message?: string
@@ -778,6 +783,20 @@ export const api = {
 
     getOnboardingStatus: async () => {
       return request('/user/onboarding/status')
+    },
+
+    // User in-app notifications (list + unread count). Uses same shape as admin; backend may use GET /user/notifications.
+    getNotifications: async (params?: { page?: number; limit?: number; unreadOnly?: boolean }) => {
+      const queryParams = new URLSearchParams()
+      if (params?.page) queryParams.append('page', params.page.toString())
+      if (params?.limit) queryParams.append('limit', params.limit.toString())
+      if (params?.unreadOnly) queryParams.append('unreadOnly', 'true')
+      const query = queryParams.toString()
+      return request(`/user/notifications${query ? `?${query}` : ''}`)
+    },
+
+    getUnreadNotificationCount: async () => {
+      return request<{ count: number }>('/user/notifications/unread-count')
     },
 
     // Bank Accounts

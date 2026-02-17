@@ -1,7 +1,9 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Bell, X, CheckCircle, Clock, ArrowDownRight } from '@phosphor-icons/react'
+import { Bell, X, CheckCircle, Clock, ArrowDownRight, Megaphone } from '@phosphor-icons/react'
+import { notificationSocketManager } from '@/lib/notification-socket'
+import { api } from '@/lib/api'
 
 interface NotificationBellProps {
   theme: 'light' | 'dark'
@@ -9,12 +11,13 @@ interface NotificationBellProps {
 
 interface UserNotification {
   id: string
-  type: 'credit_approved' | 'credit_rejected' | 'payout_completed' | 'payout_failed' | 'onboarding_completed' | 'system_message'
+  type: string
   title: string
   message: string
   isRead: boolean
   createdAt: string
   actionUrl?: string
+  metadata?: Record<string, unknown>
 }
 
 export function NotificationBell({ theme }: NotificationBellProps) {
@@ -23,6 +26,57 @@ export function NotificationBell({ theme }: NotificationBellProps) {
   const [notifications, setNotifications] = useState<UserNotification[]>([])
   const [unreadCount, setUnreadCount] = useState(0)
   const panelRef = useRef<HTMLDivElement>(null)
+
+  // Connect to notification socket and fetch initial list + count
+  useEffect(() => {
+    notificationSocketManager.connect()
+
+    const handleNotification = (n: {
+      id: string
+      type: string
+      title: string
+      message: string
+      isRead: boolean
+      createdAt: string
+      actionUrl?: string | null
+      metadata?: Record<string, unknown>
+    }) => {
+      setNotifications((prev) => [{ ...n, actionUrl: n.actionUrl ?? undefined }, ...prev])
+      setUnreadCount((c) => c + 1)
+    }
+
+    const handleUnreadCount = (count: number) => {
+      setUnreadCount(count)
+    }
+
+    notificationSocketManager.onNotification(handleNotification)
+    notificationSocketManager.onUnreadCount(handleUnreadCount)
+
+    // Request initial unread count from socket (server may reply with unread_count)
+    notificationSocketManager.getUnreadCount((res) => {
+      if (res.success && res.count !== undefined) setUnreadCount(res.count)
+    })
+
+    // Fetch initial notifications list and unread count via REST
+    api.user.getNotifications({ limit: 20 }).then((res) => {
+      if (res.success && res.data) {
+        const data = res.data as { notifications?: UserNotification[] }
+        const list = Array.isArray(data.notifications) ? data.notifications : []
+        setNotifications(list)
+      }
+    }).catch(() => {})
+
+    api.user.getUnreadNotificationCount().then((res) => {
+      if (res.success && res.data && typeof (res.data as { count?: number }).count === 'number') {
+        setUnreadCount((res.data as { count: number }).count)
+      }
+    }).catch(() => {})
+
+    return () => {
+      notificationSocketManager.offNotification(handleNotification)
+      notificationSocketManager.offUnreadCount(handleUnreadCount)
+    }
+  }, [])
 
   // Close panel when clicking outside
   useEffect(() => {
@@ -53,6 +107,9 @@ export function NotificationBell({ theme }: NotificationBellProps) {
         return <X size={20} weight="fill" className="text-red-500" />
       case 'onboarding_completed':
         return <CheckCircle size={20} weight="fill" className="text-green-500" />
+      case 'announcement':
+      case 'ANNOUNCEMENT':
+        return <Megaphone size={20} weight="fill" className="text-amber-500" />
       default:
         return <Bell size={20} weight="regular" className="text-gray-500" />
     }

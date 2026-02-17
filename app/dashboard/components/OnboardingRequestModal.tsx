@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { X, UserPlus, Clock } from '@phosphor-icons/react'
 import { api, ApiError } from '@/lib/api'
 import { useToast } from '@/lib/toast'
@@ -59,7 +60,12 @@ export function OnboardingRequestModal({
         
         // Handle specific error cases
         if (error.status === 400) {
-          errorMsg = 'You already have a pending onboarding request'
+          const lower = (error.message || '').toLowerCase()
+          if (lower.includes('tiktok') || lower.includes('link')) {
+            errorMsg = 'You must link your TikTok account before submitting an onboarding request.'
+          } else {
+            errorMsg = errorMsg || 'You already have a pending onboarding request'
+          }
         } else if (error.status === 409) {
           errorMsg = 'You have already completed onboarding'
         }
@@ -117,6 +123,14 @@ export function OnboardingRequestModal({
               <p className={`text-sm font-sequel ${
                 isDark ? 'text-red-300' : 'text-red-600'
               }`}>{error}</p>
+              {error.toLowerCase().includes('tiktok') && (
+                <Link
+                  href="/onboarding"
+                  className="mt-2 inline-block text-sm font-semibold text-blue-500 hover:text-blue-400"
+                >
+                  Link TikTok account →
+                </Link>
+              )}
             </div>
           )}
 

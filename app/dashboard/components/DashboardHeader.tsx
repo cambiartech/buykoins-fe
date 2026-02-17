@@ -1,11 +1,16 @@
 'use client'
 
+import Link from 'next/link'
 import { Sun, Moon, Gear, SignOut } from '@phosphor-icons/react'
 import { NotificationBell } from './NotificationBell'
 
 interface DashboardHeaderProps {
   theme: 'light' | 'dark'
   userFirstName: string
+  /** Whether user has linked TikTok (required for onboarding). */
+  hasTiktok?: boolean
+  tiktokDisplayName?: string | null
+  tiktokAvatarUrl?: string | null
   onToggleTheme: () => void
   onOpenSettings: () => void
   onLogout: () => void
@@ -14,6 +19,9 @@ interface DashboardHeaderProps {
 export function DashboardHeader({
   theme,
   userFirstName,
+  hasTiktok = false,
+  tiktokDisplayName,
+  tiktokAvatarUrl,
   onToggleTheme,
   onOpenSettings,
   onLogout,
@@ -46,6 +54,27 @@ export function DashboardHeader({
             }`}>
               {getGreeting()}, {userFirstName}
             </p>
+            <Link
+              href="/onboarding"
+              className={`inline-flex items-center gap-1.5 mt-1 text-xs font-sequel ${
+                hasTiktok
+                  ? isDark ? 'text-white/50 hover:text-white/70' : 'text-gray-500 hover:text-gray-700'
+                  : 'text-tiktok-primary hover:underline'
+              }`}
+            >
+              {hasTiktok ? (
+                <>
+                  {tiktokAvatarUrl ? (
+                    <img src={tiktokAvatarUrl} alt="" className="w-4 h-4 rounded-full object-cover" />
+                  ) : (
+                    <span className="w-4 h-4 rounded-full bg-tiktok-primary/20 flex items-center justify-center text-[10px] font-bold text-tiktok-primary">TT</span>
+                  )}
+                  <span>{tiktokDisplayName ? `@${tiktokDisplayName}` : 'TikTok connected'}</span>
+                </>
+              ) : (
+                <span>Link TikTok account</span>
+              )}
+            </Link>
           </div>
           <div className="flex items-center space-x-2">
             {/* Notification Bell */}

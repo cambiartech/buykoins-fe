@@ -275,6 +275,9 @@ function UserDashboardContent() {
       <DashboardHeader
         theme={theme}
         userFirstName={userFirstName}
+        hasTiktok={Boolean(user?.tiktokOpenId)}
+        tiktokDisplayName={user?.tiktokDisplayName}
+        tiktokAvatarUrl={user?.tiktokAvatarUrl}
         onToggleTheme={toggleTheme}
         onOpenSettings={() => setCurrentView('settings')}
         onLogout={handleLogout}
@@ -322,6 +325,12 @@ function UserDashboardContent() {
             onViewTransactions={() => setCurrentView('transactions')}
             onViewCreditHistory={() => setCurrentView('credit-history')}
             onRequestOnboarding={async () => {
+              // Must have TikTok linked before requesting onboarding
+              if (!user?.tiktokOpenId) {
+                toast.error('Please link your TikTok account first.')
+                router.push('/onboarding')
+                return
+              }
               try {
                 // First check onboarding requirements
                 const statusResponse = await api.user.getOnboardingStatus()

@@ -122,6 +122,19 @@ export function SupportModal({
   }, [isOpen, initialConversationId, initialConversationType])
 
   const cleanup = () => {
+    const currentConvId = conversationIdRef.current || conversation?.id
+    // Refresh support badge from backend when closing so badge shows correct count (e.g. 0 after reading)
+    if (currentConvId) {
+      api.support.getConversation(currentConvId).then((response) => {
+        if (response.success && response.data) {
+          const conv = (response.data as any).conversation || response.data as Conversation
+          if (conv.unreadCount !== undefined) {
+            updateUnreadCount(conv.unreadCount)
+          }
+        }
+      }).catch(() => {})
+    }
+
     // Remove all event listeners first
     socketManager.offMessageReceived(handleNewMessage)
     socketManager.offTypingStart(handleTypingStart)
@@ -129,7 +142,6 @@ export function SupportModal({
     socketManager.offError(handleSocketError)
     
     // Leave conversation if connected
-    const currentConvId = conversationIdRef.current || conversation?.id
     if (currentConvId && socketManager.isConnected()) {
       socketManager.leaveConversation(currentConvId)
     }
