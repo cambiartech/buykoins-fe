@@ -748,7 +748,7 @@ export const api = {
       return request('/user/profile')
     },
 
-    updateProfile: async (data: { firstName?: string; lastName?: string; phone?: string }) => {
+    updateProfile: async (data: { firstName?: string; lastName?: string; phone?: string; email?: string }) => {
       return request('/user/profile', {
         method: 'PATCH',
         body: JSON.stringify(data),

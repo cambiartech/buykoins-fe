@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { X, User, Bell, Shield, Sun, Moon, Wallet, Question, ArrowUpRight, Bank, ArrowDownRight } from '@phosphor-icons/react'
 import { ProfileModal } from './ProfileModal'
 import { ChangePasswordModal } from './ChangePasswordModal'
@@ -13,6 +13,9 @@ interface SettingsViewProps {
   onToggleTheme: () => void
   onProfileUpdated: () => void
   onViewChange?: (view: View) => void
+  /** When true, open the Profile modal as soon as this view mounts (e.g. from onboarding step). */
+  openProfileOnMount?: boolean
+  onOpenProfileOpened?: () => void
 }
 
 export function SettingsView({
@@ -22,10 +25,19 @@ export function SettingsView({
   onToggleTheme,
   onProfileUpdated,
   onViewChange,
+  openProfileOnMount,
+  onOpenProfileOpened,
 }: SettingsViewProps) {
   const isDark = theme === 'dark'
   const [showProfileModal, setShowProfileModal] = useState(false)
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false)
+
+  useEffect(() => {
+    if (openProfileOnMount) {
+      setShowProfileModal(true)
+      onOpenProfileOpened?.()
+    }
+  }, [openProfileOnMount])
 
   return (
     <>

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { X } from '@phosphor-icons/react'
 import { api, ApiError } from '@/lib/api'
 import { useToast } from '@/lib/toast'
-import { getUser, setUser } from '@/lib/auth'
+import { getUser, setUser, isPlaceholderEmail } from '@/lib/auth'
 import PhoneInput from 'react-phone-number-input'
 import 'react-phone-number-input/style.css'
 
@@ -23,14 +23,18 @@ export function ProfileModal({ isOpen, onClose, theme, onProfileUpdated }: Profi
     firstName: '',
     lastName: '',
     phone: '',
+    email: '',
   })
   const [errors, setErrors] = useState<{
     firstName?: string
     lastName?: string
     phone?: string
+    email?: string
     general?: string
   }>({})
   const isDark = theme === 'dark'
+  const user = getUser()
+  const showEmailField = Boolean(user && isPlaceholderEmail(user.email))
 
   useEffect(() => {
     if (isOpen) {
@@ -43,10 +47,12 @@ export function ProfileModal({ isOpen, onClose, theme, onProfileUpdated }: Profi
     try {
       const response = await api.user.getProfile()
       if (response.success && response.data) {
+        const data = response.data as any
         setFormData({
-          firstName: (response.data as any).firstName || '',
-          lastName: (response.data as any).lastName || '',
-          phone: (response.data as any).phone || '',
+          firstName: data.firstName || '',
+          lastName: data.lastName || '',
+          phone: data.phone || '',
+          email: data.email || '',
         })
       }
     } catch (error) {
@@ -60,7 +66,7 @@ export function ProfileModal({ isOpen, onClose, theme, onProfileUpdated }: Profi
     }
   }
 
-  const handleChange = (field: 'firstName' | 'lastName' | 'phone', value: string) => {
+  const handleChange = (field: 'firstName' | 'lastName' | 'phone' | 'email', value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }))
@@ -75,6 +81,15 @@ export function ProfileModal({ isOpen, onClose, theme, onProfileUpdated }: Profi
     }
     if (formData.lastName && formData.lastName.length > 100) {
       newErrors.lastName = 'Last name must be 100 characters or less'
+    }
+    if (showEmailField && formData.email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(formData.email)) {
+        newErrors.email = 'Please enter a valid email address'
+      }
+    }
+    if (showEmailField && !formData.email?.trim()) {
+      newErrors.email = 'Email is required so we can reach you and send your credentials'
     }
 
     setErrors(newErrors)
@@ -92,10 +107,11 @@ export function ProfileModal({ isOpen, onClose, theme, onProfileUpdated }: Profi
     setErrors({})
 
     try {
-      const updateData: { firstName?: string; lastName?: string; phone?: string } = {}
+      const updateData: { firstName?: string; lastName?: string; phone?: string; email?: string } = {}
       if (formData.firstName) updateData.firstName = formData.firstName
       if (formData.lastName) updateData.lastName = formData.lastName
       if (formData.phone) updateData.phone = formData.phone
+      if (showEmailField && formData.email?.trim()) updateData.email = formData.email.trim()
 
       const response = await api.user.updateProfile(updateData)
 
@@ -104,11 +120,13 @@ export function ProfileModal({ isOpen, onClose, theme, onProfileUpdated }: Profi
         // Update local user data
         const currentUser = getUser()
         if (currentUser && response.data) {
+          const data = response.data as any
           setUser({
             ...currentUser,
-            firstName: (response.data as any).firstName || currentUser.firstName,
-            lastName: (response.data as any).lastName || currentUser.lastName,
-            phone: (response.data as any).phone || currentUser.phone,
+            firstName: data.firstName ?? currentUser.firstName,
+            lastName: data.lastName ?? currentUser.lastName,
+            phone: data.phone ?? currentUser.phone,
+            email: data.email ?? currentUser.email,
           })
         }
         onProfileUpdated()
@@ -166,6 +184,37 @@ export function ProfileModal({ isOpen, onClose, theme, onProfileUpdated }: Profi
               <p className={`text-sm font-sequel ${
                 isDark ? 'text-red-300' : 'text-red-600'
               }`}>{errors.general}</p>
+            </div>
+          )}
+
+          {/* Email (TikTok users only: add real email once) */}
+          {showEmailField && (
+            <div>
+              <label className={`block text-sm font-medium mb-2 font-sequel ${
+                isDark ? 'text-white/80' : 'text-gray-700'
+              }`}>
+                Email address
+              </label>
+              <input
+                type="email"
+                value={formData.email}
+                onChange={(e) => handleChange('email', e.target.value)}
+                placeholder="you@example.com"
+                disabled={isLoading || isFetching}
+                className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-600 font-sequel ${
+                  errors.email
+                    ? 'border-red-500/50 focus:ring-red-500/50'
+                    : isDark
+                      ? 'bg-white/5 border-white/10 text-white placeholder-white/30'
+                      : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-400'
+                }`}
+              />
+              <p className={`mt-1 text-xs font-sequel ${isDark ? 'text-white/50' : 'text-gray-500'}`}>
+                We need this to reach you and send your credentials. You can only set it once.
+              </p>
+              {errors.email && (
+                <p className="mt-1.5 text-red-400 text-xs font-sequel">{errors.email}</p>
+              )}
             </div>
           )}
 

@@ -14,6 +14,13 @@ export interface User {
   tiktokOpenId?: string | null
   tiktokDisplayName?: string | null
   tiktokAvatarUrl?: string | null
+  /** How the user signed up; use to branch onboarding steps. */
+  authType?: 'email' | 'tiktok'
+}
+
+/** True if the user has a placeholder email (e.g. TikTok sign-up without email set). */
+export function isPlaceholderEmail(email: string | undefined | null): boolean {
+  return Boolean(email && String(email).toLowerCase().endsWith('@users.buykoins.com'))
 }
 
 export interface Admin {

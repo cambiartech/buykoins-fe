@@ -1,7 +1,9 @@
 'use client'
 
-import { Wallet, ArrowDownRight, ArrowUpRight, Plus, CheckCircle, Clock, XCircle, UserPlus, CreditCard } from '@phosphor-icons/react'
+import { Wallet, ArrowDownRight, ArrowUpRight, Plus, CheckCircle, Clock, XCircle, CreditCard } from '@phosphor-icons/react'
 import { CreditStatus, OnboardingStatus, Transaction, Activity } from './types'
+import type { AuthType } from '../lib/onboarding-steps'
+import { OnboardingStepsCard } from './OnboardingStepsCard'
 
 interface DashboardOverviewProps {
   theme: 'light' | 'dark'
@@ -11,11 +13,16 @@ interface DashboardOverviewProps {
   creditStatus: CreditStatus
   transactions: Transaction[]
   activities?: Activity[]
+  /** How the user signed up; drives which onboarding steps to show. */
+  authType: AuthType
+  hasTiktok: boolean
+  hasRealEmail: boolean
   onWithdraw: () => void
   onNewCredit: () => void
   onViewTransactions: () => void
   onViewCreditHistory: () => void
   onRequestOnboarding: () => void
+  onOpenProfile: () => void
   onViewCards?: () => void
   onAddFunds?: () => void
   onTransferToWallet?: () => void
@@ -38,11 +45,15 @@ export function DashboardOverview({
   creditStatus,
   transactions,
   activities,
+  authType,
+  hasTiktok,
+  hasRealEmail,
   onWithdraw,
   onNewCredit,
   onViewTransactions,
   onViewCreditHistory,
   onRequestOnboarding,
+  onOpenProfile,
   onViewCards,
   onAddFunds,
   onTransferToWallet,
@@ -267,34 +278,17 @@ export function DashboardOverview({
         </div>
       </div>
 
-      {/* Onboarding Status */}
+      {/* Onboarding steps (pending only): step-based flow by sign-up type */}
       {onboardingStatus === 'pending' && (
-        <div className={`mt-4 p-4 rounded-xl border ${
-          isDark 
-            ? 'bg-yellow-500/10 border-yellow-500/30' 
-            : 'bg-yellow-50 border-yellow-200'
-        }`}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3 hidden md:flex">
-              <Clock size={20} weight="regular" className="text-yellow-500" />
-              <div className="">
-                <p className={`font-semibold text-sm font-sequel ${
-                  isDark ? 'text-white' : 'text-gray-900'
-                }`}>Onboarding Required</p>
-                <p className={`text-xs font-sequel ${
-                  isDark ? 'text-white/70' : 'text-gray-600'
-                }`}>Submit a request to get started with onboarding</p>
-              </div>
-            </div>
-            <button
-              onClick={onRequestOnboarding}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all text-sm font-sequel flex items-center space-x-2 w-full md:w-auto"
-            >
-              <UserPlus size={16} weight="regular" />
-              <span>Request Onboarding</span>
-            </button>
-          </div>
-        </div>
+        <OnboardingStepsCard
+          theme={theme}
+          authType={authType}
+          hasTiktok={hasTiktok}
+          hasRealEmail={hasRealEmail}
+          onboardingStatus={onboardingStatus}
+          onRequestOnboarding={onRequestOnboarding}
+          onOpenProfile={onOpenProfile}
+        />
       )}
 
       {/* Credit Request Status */}
