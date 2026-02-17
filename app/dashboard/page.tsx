@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { AuthGuard } from '@/app/components/AuthGuard'
-import { getUser, clearAuth, setUser, isPlaceholderEmail } from '@/lib/auth'
+import { getUser, clearAuth, setUser, isPlaceholderEmail, resolveAuthType, userHasTiktok } from '@/lib/auth'
 import { api, ApiError } from '@/lib/api'
 import { useToast } from '@/lib/toast'
 import { DashboardHeader } from './components/DashboardHeader'
@@ -276,7 +276,7 @@ function UserDashboardContent() {
       <DashboardHeader
         theme={theme}
         userFirstName={userFirstName}
-        hasTiktok={Boolean(user?.tiktokOpenId)}
+        hasTiktok={userHasTiktok(user)}
         tiktokDisplayName={user?.tiktokDisplayName}
         tiktokAvatarUrl={user?.tiktokAvatarUrl}
         onToggleTheme={toggleTheme}
@@ -321,8 +321,8 @@ function UserDashboardContent() {
             creditStatus={creditStatus}
             transactions={transactions}
             activities={activities}
-            authType={user?.authType ?? (user?.email && isPlaceholderEmail(user.email) ? 'tiktok' : 'email')}
-            hasTiktok={Boolean(user?.tiktokOpenId)}
+            authType={resolveAuthType(user)}
+            hasTiktok={userHasTiktok(user)}
             hasRealEmail={!isPlaceholderEmail(user?.email)}
             onWithdraw={handleWithdraw}
             onNewCredit={() => setShowCreditModal(true)}
@@ -333,20 +333,19 @@ function UserDashboardContent() {
               setCurrentView('settings')
             }}
             onRequestOnboarding={async () => {
-              // Email users: must have TikTok linked first
-              if (!user?.tiktokOpenId && (user?.authType === 'email' || !isPlaceholderEmail(user?.email))) {
+              const authTypeResolved = resolveAuthType(user ?? null)
+              // Email sign-up: must have TikTok linked first
+              if (authTypeResolved === 'email' && !userHasTiktok(user)) {
                 toast.error('Please link your TikTok account first.')
                 router.push('/onboarding')
                 return
               }
-              // TikTok users: must have added a real email in profile first
-              if (user?.authType === 'tiktok' || isPlaceholderEmail(user?.email)) {
-                if (isPlaceholderEmail(user?.email)) {
-                  toast.error('Please add your email in your profile first so we can reach you.')
-                  setAutoOpenProfile(true)
-                  setCurrentView('settings')
-                  return
-                }
+              // TikTok sign-up: must have added a real email in profile first
+              if (authTypeResolved === 'tiktok' && isPlaceholderEmail(user?.email)) {
+                toast.error('Please add your email in your profile first so we can reach you.')
+                setAutoOpenProfile(true)
+                setCurrentView('settings')
+                return
               }
               try {
                 // First check onboarding requirements

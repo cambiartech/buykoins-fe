@@ -14,13 +14,34 @@ export interface User {
   tiktokOpenId?: string | null
   tiktokDisplayName?: string | null
   tiktokAvatarUrl?: string | null
+  /** Backend may send this instead of/in addition to tiktokOpenId; use for header/UI. */
+  hasTikTok?: boolean
   /** How the user signed up; use to branch onboarding steps. */
   authType?: 'email' | 'tiktok'
+}
+
+/** True if the user has TikTok linked (from tiktokOpenId or backend hasTikTok). */
+export function userHasTiktok(user: User | null): boolean {
+  if (!user) return false
+  return Boolean(user.tiktokOpenId || user.hasTikTok)
 }
 
 /** True if the user has a placeholder email (e.g. TikTok sign-up without email set). */
 export function isPlaceholderEmail(email: string | undefined | null): boolean {
   return Boolean(email && String(email).toLowerCase().endsWith('@users.buykoins.com'))
+}
+
+/**
+ * Resolve authType for UI branching (user-journey: email vs tiktok sign-up).
+ * Prefer backend authType; else infer: TikTok sign-up = has TikTok linked but no real email yet.
+ */
+export function resolveAuthType(user: User | null): 'email' | 'tiktok' {
+  if (!user) return 'email'
+  if (user.authType === 'tiktok' || user.authType === 'email') return user.authType
+  if (isPlaceholderEmail(user.email)) return 'tiktok'
+  const hasRealEmail = Boolean(user.email && String(user.email).trim() && !isPlaceholderEmail(user.email))
+  if (userHasTiktok(user) && !hasRealEmail) return 'tiktok'
+  return 'email'
 }
 
 export interface Admin {

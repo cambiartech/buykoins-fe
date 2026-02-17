@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { AuthGuard } from '@/app/components/AuthGuard'
-import { getUser, setUser } from '@/lib/auth'
+import { getUser, setUser, resolveAuthType, userHasTiktok } from '@/lib/auth'
 import { api, getTiktokLinkUrl } from '@/lib/api'
 import { useToast } from '@/lib/toast'
 
@@ -24,6 +24,16 @@ function OnboardingContent() {
     setReturnUrl(typeof window !== 'undefined' ? `${window.location.origin}/onboarding` : '')
   }, [])
 
+  const authType = resolveAuthType(user)
+  const hasTiktok = userHasTiktok(user)
+
+  // TikTok sign-ups already have TikTok linked – send them to dashboard, no "link account" flow
+  useEffect(() => {
+    if (authType === 'tiktok' && !tiktokLinked && !tiktokError) {
+      router.replace('/dashboard')
+    }
+  }, [authType, tiktokLinked, tiktokError, router])
+
   // Handle redirect back from TikTok OAuth: show toast, refresh user, clear URL params
   useEffect(() => {
     if (tiktokLinked === '1') {
@@ -40,7 +50,6 @@ function OnboardingContent() {
         })
         .catch(() => {})
         .finally(() => setRefreshing(false))
-      // Clear query params without reload
       router.replace('/onboarding', { scroll: false })
       return
     }
@@ -50,7 +59,14 @@ function OnboardingContent() {
     }
   }, [tiktokLinked, tiktokError, tiktokErrorDesc])
 
-  const hasTiktok = Boolean(user?.tiktokOpenId)
+  // While redirecting TikTok user to dashboard, show minimal UI
+  if (authType === 'tiktok' && !tiktokLinked && !tiktokError) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center p-6">
+        <div className="w-8 h-8 border-2 border-tiktok-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
 
   const handleAddTiktok = () => {
     if (!returnUrl) return
