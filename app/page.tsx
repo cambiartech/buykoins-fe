@@ -2,7 +2,8 @@
 
 import Link from 'next/link'
 import { useState, useEffect, useRef } from 'react'
-import { List, X, ArrowRight, Globe, Wallet, ShieldCheck, Clock, CreditCard, TrendUp, InstagramLogo, FacebookLogo, Plus, Minus, SignIn, UserPlus, Question, House, LinkedinLogo, YoutubeLogo } from '@phosphor-icons/react'
+import { List, X, ArrowRight, Globe, Wallet, ShieldCheck, CreditCard, TrendUp, InstagramLogo, FacebookLogo, Plus, Minus, SignIn, UserPlus, Question, House, LinkedinLogo, YoutubeLogo } from '@phosphor-icons/react'
+import Footer from './components/Footer'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -294,211 +295,92 @@ export default function LandingPage() {
   )
 }
 
-// Features Section Component with GSAP Scroll Animation
+// Features Section – clean single block with list (no split cards)
 function FeaturesSection() {
   const sectionRef = useRef<HTMLDivElement>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
-  const titleRef = useRef<HTMLDivElement>(null)
-  const brandTextRef = useRef<HTMLDivElement>(null)
-  const boxesRef = useRef<(HTMLDivElement | null)[]>([])
+  const itemsRef = useRef<(HTMLDivElement | null)[]>([])
 
   const features = [
     {
       icon: Wallet,
       title: 'Secure Wallet',
-      description: 'Manage your TikTok earnings in a secure, encrypted wallet with real-time balance tracking.',
-      color: 'from-blue-500 to-cyan-500',
-      initialPos: { x: -400, y: -50, rotation: -20 },
+      description: 'Manage your TikTok earnings in a secure wallet with real-time balance tracking.',
     },
     {
       icon: ShieldCheck,
       title: 'Verified Agency',
       description: 'Join our verified TikTok creator agency and get instant access to withdrawal services.',
-      color: 'from-green-500 to-emerald-500',
-      initialPos: { x: 400, y: -100, rotation: 20 },
-    },
-    {
-      icon: Clock,
-      title: 'Fast Processing',
-      description: 'Withdraw your earnings quickly with our streamlined verification and processing system.',
-      color: 'from-purple-500 to-pink-500',
-      initialPos: { x: -350, y: 300, rotation: -15 },
     },
     {
       icon: CreditCard,
       title: 'Bank Integration',
-      description: 'Seamlessly connect your bank account for direct deposits to your local currency.',
-      color: 'from-orange-500 to-red-500',
-      initialPos: { x: 350, y: 350, rotation: 15 },
+      description: 'Connect your bank account for direct deposits to your local currency.',
     },
     {
       icon: TrendUp,
       title: 'Track Earnings',
-      description: 'Monitor your TikTok earnings growth and withdrawal history with detailed analytics.',
-      color: 'from-yellow-500 to-orange-500',
-      initialPos: { x: 0, y: -150, rotation: 10 },
+      description: 'Monitor your earnings growth and withdrawal history with detailed analytics.',
     },
   ]
 
   useEffect(() => {
-    if (!sectionRef.current || !containerRef.current || !titleRef.current || !brandTextRef.current) return
-
-    const boxes = boxesRef.current.filter(Boolean) as HTMLDivElement[]
-    if (boxes.length === 0) return
-
-    // Calculate final positions from current grid layout
-    const containerRect = containerRef.current.getBoundingClientRect()
-    const finalPositions = boxes.map((box) => {
-      const rect = box.getBoundingClientRect()
-      return {
-        x: rect.left - containerRect.left,
-        y: rect.top - containerRect.top,
-      }
-    })
-
-    // Set initial state - title visible, boxes hidden and scattered, brand text hidden
-    gsap.set(titleRef.current, {
-      opacity: 1,
-    })
-
-    gsap.set(brandTextRef.current, {
-      opacity: 0,
-      x: -50,
-    })
-
-    boxes.forEach((box, index) => {
-      const initial = features[index].initialPos
-      gsap.set(box, {
-        position: 'absolute',
-        opacity: 0,
-        x: initial.x,
-        y: initial.y,
-        rotation: initial.rotation,
-        scale: 1,
+    if (!sectionRef.current) return
+    const items = itemsRef.current.filter(Boolean) as HTMLDivElement[]
+    if (items.length === 0) return
+    items.forEach((item) => gsap.set(item, { opacity: 0, y: 24 }))
+    items.forEach((item, i) => {
+      gsap.to(item, {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        delay: i * 0.08,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 75%',
+          end: 'top 40%',
+          scrub: 1,
+        },
       })
     })
-
-    // Create scroll timeline
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: 'top top',
-        end: '+=300%',
-        scrub: 1,
-        pin: true,
-        anticipatePin: 1,
-      },
-    })
-
-    // Stage 1: Title fades out (0-20%)
-    tl.to(titleRef.current, {
-      opacity: 0,
-      duration: 0.2,
-      ease: 'power2.in',
-    })
-
-    // Stage 2: Cards fade in (scattered) (20-30%)
-    boxes.forEach((box) => {
-      tl.to(
-        box,
-        {
-          opacity: 1,
-          duration: 0.1,
-          ease: 'power2.out',
-        },
-        '<0.05'
-      )
-    })
-
-    // Stage 3: Cards move to center and stack together (30-100%)
-    boxes.forEach((box, index) => {
-      const final = finalPositions[index]
-      const initial = features[index].initialPos
-      tl.to(
-        box,
-        {
-          x: final.x - initial.x,
-          y: final.y - initial.y,
-          rotation: 0,
-          duration: 0.7,
-          ease: 'power2.inOut',
-        },
-        '<0.05'
-      )
-    })
-
-    // Stage 4: Brand text appears on the left (70-100%)
-    tl.to(
-      brandTextRef.current,
-      {
-        opacity: 1,
-        x: 0,
-        duration: 0.3,
-        ease: 'power2.out',
-      },
-      '>0.2'
-    )
-
-    // Cleanup
-    return () => {
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
-    }
+    return () => ScrollTrigger.getAll().forEach((t) => t.kill())
   }, [])
 
   return (
     <section ref={sectionRef} className="relative z-10 bg-white overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32">
-        {/* Title - visible from start */}
-        <div ref={titleRef} className="text-center mb-16">
-          <h2 className="text-[#29013a] font-monument font-bold text-3xl sm:text-4xl lg:text-6xl mb-4">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
+        <div className="text-center mb-14">
+          <h2 className="text-[#29013a] font-monument font-bold text-3xl sm:text-4xl lg:text-5xl mb-3">
             Why Choose Us
           </h2>
-          {/* <p className="text-gray-600 text-lg font-sequel max-w-2xl mx-auto">
-            Everything you need to manage and withdraw your TikTok creator earnings
-          </p> */}
+          <p className="text-[#29013a]/70 text-lg font-sequel max-w-xl mx-auto">
+            Everything you need to manage and withdraw your creator earnings.
+          </p>
         </div>
 
-        {/* Container for boxes */}
-        <div
-          ref={containerRef}
-          className="relative"
-          style={{ minHeight: '700px' }}
-        >
-          {/* Brand Text - appears on left when cards converge */}
-          <div
-            ref={brandTextRef}
-            className="absolute left-4 xl:left-8 2xl:left-12 top-1/4 -translate-y-1/2 hidden lg:block"
-          >
-            <h3 className="text-[#29013a] font-monument font-bold text-6xl xl:text-7xl 2xl:text-8xl leading-tight">
-              BuyKoins
-            </h3>
-          </div>
-
-          {/* Grid layout - boxes will be positioned absolutely by GSAP but grid helps calculate positions */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center max-w-5xl mx-auto">
-            {features.map((feature, index) => {
-              const Icon = feature.icon
-              return (
-                <div
-                  key={index}
-                  ref={(el) => {
-                    boxesRef.current[index] = el
-                  }}
-                  className={`bg-gradient-to-br ${feature.color} rounded-2xl p-4 sm:p-5 shadow-2xl aspect-square flex flex-col w-full max-w-[280px]`}
-                >
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3 sm:mb-4 flex-shrink-0">
-                    <Icon size={20} weight="bold" className="text-white" />
-                  </div>
-                  <h3 className="text-white font-monument font-bold text-sm sm:text-base mb-1 sm:mb-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+          {features.map((feature, index) => {
+            const Icon = feature.icon
+            return (
+              <div
+                key={index}
+                ref={(el) => { itemsRef.current[index] = el }}
+                className="flex gap-4 p-5 sm:p-6 rounded-2xl bg-[#29013a]/05 border border-[#29013a]/10 hover:border-[#29013a]/20 hover:bg-[#29013a]/08 transition-all"
+              >
+                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#29013a] flex items-center justify-center">
+                  <Icon size={24} weight="regular" className="text-white" />
+                </div>
+                <div>
+                  <h3 className="text-[#29013a] font-monument font-bold text-lg mb-1">
                     {feature.title}
                   </h3>
-                  <p className="text-white/90 text-xs font-sequel leading-relaxed flex-grow">
+                  <p className="text-[#29013a]/70 text-sm font-sequel leading-relaxed">
                     {feature.description}
                   </p>
                 </div>
-              )
-            })}
-          </div>
+              </div>
+            )
+          })}
         </div>
       </div>
     </section>
@@ -963,245 +845,3 @@ function StatsSection() {
     </section>
   )
 }
-
-// Footer Component
-function Footer() {
-  const [showLanguageMenu, setShowLanguageMenu] = useState(false)
-
-  // Close language menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement
-      if (!target.closest('.language-menu-container')) {
-        setShowLanguageMenu(false)
-      }
-    }
-
-    if (showLanguageMenu) {
-      document.addEventListener('mousedown', handleClickOutside)
-      return () => document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [showLanguageMenu])
-
-  return (
-    <footer className="relative z-10 bg-[#29013a] border-t border-[#29013a]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Navigation Links - FIRST */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
-          {/* Get Started */}
-          <div>
-            <h3 className="text-white/80 font-semibold mb-4 text-sm">Get Started</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/signup" className="text-white/70 hover:text-white transition-colors text-sm">
-                  Sign up
-                </Link>
-              </li>
-              <li>
-                <Link href="/login" className="text-white/70 hover:text-white transition-colors text-sm">
-                  Login
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Discover */}
-          <div>
-            <h3 className="text-white/80 font-semibold mb-4 text-sm">Discover</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/dashboard" className="text-white/70 hover:text-white transition-colors text-sm">
-                  Dashboard
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Company */}
-          <div>
-            <h3 className="text-white/80 font-semibold mb-4 text-sm">Company</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/about" className="text-white/70 hover:text-white transition-colors text-sm">
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link href="/partnerships" className="text-white/70 hover:text-white transition-colors text-sm">
-                  Partnerships
-                </Link>
-              </li>
-              <li>
-                <Link href="/media" className="text-white/70 hover:text-white transition-colors text-sm">
-                  Media Assets
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Legal */}
-          <div>
-            <h3 className="text-white/80 font-semibold mb-4 text-sm">Legal</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/privacy" className="text-white/70 hover:text-white transition-colors text-sm">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/terms" className="text-white/70 hover:text-white transition-colors text-sm">
-                  Terms and Conditions
-                </Link>
-              </li>
-              <li>
-                <Link href="/cookies" className="text-white/70 hover:text-white transition-colors text-sm">
-                  Cookie Policy
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Help */}
-          <div>
-            <h3 className="text-white/80 font-semibold mb-4 text-sm">Help</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/support" className="text-white/70 hover:text-white transition-colors text-sm">
-                  Support
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Support Links Section */}
-        <div className="border-b border-white/10 pb-6 mb-8">
-          <div className="flex flex-col sm:flex-row gap-6 sm:gap-8">
-            <Link href="/support" className="text-white hover:text-white/80 transition-colors text-sm font-sequel">
-              Live chat
-            </Link>
-            <Link href="/dashboard" className="text-white hover:text-white/80 transition-colors text-sm font-sequel">
-              Client portal
-            </Link>
-            <Link href="/support" className="text-white hover:text-white/80 transition-colors text-sm font-sequel">
-              Knowledge base
-            </Link>
-          </div>
-        </div>
-
-        {/* How can we help? Section */}
-        <div className="border-b border-white/10 pb-8 mb-8">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-            <div>
-              <p className="text-white text-lg sm:text-xl font-sequel mb-2">
-                How can we help?{' '}
-                <Link href="/support" className="text-[#ff4aff] hover:text-[#ff4aff]/80 underline transition-colors">
-                  Contact us.
-                </Link>
-              </p>
-            </div>
-            {/* Social Media Icons */}
-            <div className="flex items-center space-x-4">
-              <a
-                href="https://x.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-all"
-                aria-label="X (Twitter)"
-              >
-                <span className="text-white font-bold text-sm">X</span>
-              </a>
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-all"
-                aria-label="Facebook"
-              >
-                <FacebookLogo size={20} weight="fill" />
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-all"
-                aria-label="LinkedIn"
-              >
-                <LinkedinLogo size={20} weight="fill" />
-              </a>
-              <a
-                href="https://youtube.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-all"
-                aria-label="YouTube"
-              >
-                <YoutubeLogo size={20} weight="fill" />
-              </a>
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-all"
-                aria-label="Instagram"
-              >
-                <InstagramLogo size={20} weight="fill" />
-              </a>
-              <a
-                href="https://tiktok.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-all"
-                aria-label="TikTok"
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
-                </svg>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        {/* Large Logo Section - Bold and Centered */}
-        <div className="mb-8 flex justify-center">
-          <img 
-            src="/logos/logo-white.png" 
-            alt="BuyKoins" 
-            className="h-24 sm:h-32 md:h-auto w-auto md:w-full"
-
-            // className="h-24 sm:h-32 md:h-40 w-auto"
-          />
-        </div>
-
-        {/* Bottom Section - Legal Links */}
-        <div className="border-t border-white/10 pt-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            {/* Legal Links */}
-            <div className="flex flex-wrap gap-4 sm:gap-6">
-              <Link href="/terms" className="text-white/70 hover:text-white transition-colors text-xs sm:text-sm font-sequel">
-                Terms of Use
-              </Link>
-              <Link href="/privacy" className="text-white/70 hover:text-white transition-colors text-xs sm:text-sm font-sequel">
-                Privacy Notice
-              </Link>
-              <Link href="/cookies" className="text-white/70 hover:text-white transition-colors text-xs sm:text-sm font-sequel">
-                Cookie Notice
-              </Link>
-              <Link href="/cookies" className="text-white/70 hover:text-white transition-colors text-xs sm:text-sm font-sequel">
-                Cookie settings
-              </Link>
-              <Link href="/support" className="text-white/70 hover:text-white transition-colors text-xs sm:text-sm font-sequel">
-                Trust Center
-              </Link>
-            </div>
-            {/* Copyright */}
-            <p className="text-white/60 text-xs font-sequel">
-              © BuyKoins {new Date().getFullYear()}
-            </p>
-          </div>
-        </div>
-      </div>
-    </footer>
-  )
-}
-
