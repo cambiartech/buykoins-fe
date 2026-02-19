@@ -198,8 +198,7 @@ export default function LandingPage() {
               </span>
             </h1>
             <p className="text-white/80 text-lg sm:text-xl mb-8 font-sequel max-w-2xl mx-auto">
-              Join our agency and withdraw your creator earnings instantly. 
-              Secure, fast, and reliable.
+              Withdraw TikTok earnings. One USD card—load TikTok, send live gifts, pay anywhere.
             </p>
             
             {/* CTA Buttons */}
@@ -237,7 +236,7 @@ export default function LandingPage() {
       <FAQSection />
 
       {/* Testimonials Section */}
-      <TestimonialsSection />
+      {/* <TestimonialsSection /> */}
 
       {/* Stats Section with V Animation */}
       <StatsSection />
@@ -303,23 +302,23 @@ function FeaturesSection() {
   const features = [
     {
       icon: Wallet,
-      title: 'Secure Wallet',
-      description: 'Manage your TikTok earnings in a secure wallet with real-time balance tracking.',
-    },
-    {
-      icon: ShieldCheck,
-      title: 'Verified Agency',
-      description: 'Join our verified TikTok creator agency and get instant access to withdrawal services.',
+      title: 'Withdraw TikTok Earnings',
+      description: 'Get paid from live gifts. Withdraw to your bank. Fast, secure.',
     },
     {
       icon: CreditCard,
-      title: 'Bank Integration',
-      description: 'Connect your bank account for direct deposits to your local currency.',
+      title: 'USD Virtual Card',
+      description: 'One card. Load TikTok. Send live gifts. Subscriptions. Anywhere cards work.',
+    },
+    {
+      icon: ShieldCheck,
+      title: 'Secure Wallet',
+      description: 'Your balance. Real-time. Protected.',
     },
     {
       icon: TrendUp,
-      title: 'Track Earnings',
-      description: 'Monitor your earnings growth and withdrawal history with detailed analytics.',
+      title: 'Track & Payout',
+      description: 'See earnings. Request payout. Done.',
     },
   ]
 
@@ -354,7 +353,7 @@ function FeaturesSection() {
             Why Choose Us
           </h2>
           <p className="text-[#29013a]/70 text-lg font-sequel max-w-xl mx-auto">
-            Everything you need to manage and withdraw your creator earnings.
+            Withdraw earnings. One USD card for TikTok, live gifts, and everywhere else.
           </p>
         </div>
 
@@ -814,7 +813,10 @@ function StatsSection() {
       {/* Soft Purple overlay - starts covering everything, slides up to reveal white from bottom */}
       <div
         ref={redOverlayRef}
-        className="absolute top-0 left-0 right-0 h-full bg-tiktok-primary"
+        className="absolute top-0 left-0 right-0 h-full bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: 'url(/bg/testimonials.png)' }}
+
+        // className="absolute top-0 left-0 right-0 h-full bg-tiktok-primary url(bg/testimonials.jpg)"
       />
 
       {/* Content - always visible, positioned correctly */}

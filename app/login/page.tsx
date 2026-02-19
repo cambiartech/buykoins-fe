@@ -4,7 +4,7 @@ import { Suspense } from 'react'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Envelope, Lock, Eye, EyeSlash, ArrowRight, Moon, Sun, PaperPlaneTilt } from '@phosphor-icons/react'
+import { Envelope, Lock, Eye, EyeSlash, ArrowRight, Moon, Sun, PaperPlaneTilt, TiktokLogo } from '@phosphor-icons/react'
 import { api, ApiError, getTiktokLinkUrl } from '@/lib/api'
 import { useToast } from '@/lib/toast'
 import { setAuthToken, setRefreshToken, setUser } from '@/lib/auth'
@@ -465,7 +465,8 @@ function LoginPageContent() {
                   : 'border-gray-300 text-gray-800 hover:bg-gray-50'
               } disabled:opacity-50`}
             >
-              <span className="font-bold text-[#00f2ea]">TikTok</span>
+              <TiktokLogo size={20} weight="regular" className="text" />
+              {/* <span className="font-bold text-[#00f2ea]">TikTok</span> */}
               <span>Continue with TikTok</span>
             </button>
           </div>

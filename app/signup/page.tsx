@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Envelope, Lock, Eye, EyeSlash, ArrowRight, Moon, Sun } from '@phosphor-icons/react'
+import { Envelope, Lock, Eye, EyeSlash, ArrowRight, Moon, Sun, TiktokLogo } from '@phosphor-icons/react'
 import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input'
 import 'react-phone-number-input/style.css'
 import { api, ApiError, getTiktokLinkUrl } from '@/lib/api'
@@ -418,8 +418,8 @@ export default function SignupPage() {
                   : 'border-gray-300 text-gray-800 hover:bg-gray-50'
               } disabled:opacity-50`}
             >
-              <span className="font-bold text-[#00f2ea]">TikTok</span>
-              <span>Continue with TikTok</span>
+              <TiktokLogo size={20} weight="regular" className="text" />
+              <span>Coninue with TikTok</span>
             </button>
           </div>
 
