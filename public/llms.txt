@@ -1,0 +1,21 @@
+# BuyKoins
+
+> Withdraw TikTok earnings. One USD card—load TikTok, send live gifts, pay anywhere.
+
+BuyKoins by Cambiar Technologies. Creator earnings withdrawal and USD virtual cards.
+
+## Main product
+
+- **Home:** /
+- **Sign up:** /signup
+- **Log in:** /login
+
+## Legal
+
+- **Terms of Service:** /terms
+- **Privacy Policy:** /privacy
+
+## Key info
+
+- **Product:** (1) Withdraw TikTok/creator earnings to bank. (2) USD virtual card to load TikTok, send live gifts, pay subscriptions and anywhere cards are accepted.
+- **Audience:** Creators and users who send live gifts on TikTok.
